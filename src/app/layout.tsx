@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${pretendard.variable}  antialiased max-w-screen-xl m-auto`}
+        className={`${pretendard.variable}  antialiased max-w-screen-md m-auto`}
       >
         <Providers>{children}</Providers>
       </body>
