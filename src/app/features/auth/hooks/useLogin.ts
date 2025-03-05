@@ -11,10 +11,14 @@ export function useLogin() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const loginMutation = useMutation({
-    mutationFn: kakaoLoginRequest,
+    mutationFn: kakaoLoginRequest, // ✅ 로그인 API 요청
     onSuccess: (data) => {
-      setUser(data.user);
-      router.push("/");
+      setUser(data.user); // ✅ 로그인 성공 후 유저 상태 저장
+      if (data.isFirstLogin) {
+        router.push("/profile/setup"); // ✅ 첫 로그인이라면 프로필 작성 페이지로 이동
+      } else {
+        router.push("/"); // ✅ 첫 로그인이 아니면 홈으로 이동
+      }
     },
     onError: (error) => {
       console.error("❌ 로그인 실패:", error);
