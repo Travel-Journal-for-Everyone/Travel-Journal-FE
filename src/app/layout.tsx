@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Providers from "@/provider";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -25,12 +26,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
-        className={`${pretendard.variable}  antialiased max-w-screen-xl m-auto`}
+        className={`${pretendard.variable}  antialiased max-w-screen-md m-auto`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
+// src/app/layout.tsx
