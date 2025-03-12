@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Providers from "@/provider";
 import localFont from "next/font/local";
 import "./globals.css";
+import Header from "@/components/ui/Header"; // ✅ Header 유지
 
 const pretendard = localFont({
   src: [
@@ -27,12 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${pretendard.variable}  antialiased max-w-screen-md m-auto`}
-      >
-        <Providers>{children}</Providers>
+      <body className={`${pretendard.variable} antialiased`}>
+        <Providers>
+          <Header />
+
+          <div className="max-w-screen-md m-auto pt-20 px-2 md:px-4 shadow-sm rounded-sm min-h-screen">
+            <main>{children}</main>
+          </div>
+        </Providers>
       </body>
     </html>
   );
 }
-// src/app/layout.tsx
