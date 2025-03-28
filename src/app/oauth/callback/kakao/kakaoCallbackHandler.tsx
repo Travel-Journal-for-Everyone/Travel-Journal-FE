@@ -1,4 +1,3 @@
-// src/app/oauth/callback/kakao/KakaoCallbackHandler.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -13,12 +12,13 @@ export default function KakaoCallbackHandler() {
   useEffect(() => {
     const code = searchParams.get("code");
     if (code) {
-      console.log("✅ Kakao Authorization Code:", code);
+      console.log("Kakao Authorization Code:", code);
       login(code);
     } else {
-      console.error("❌ 인가 코드 없음");
+      console.error(" 인가 코드 없음");
       router.push("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   return null;

@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 export default function SocialLogin() {
   const handleKakaoLogin = async () => {
@@ -34,21 +35,42 @@ export default function SocialLogin() {
     <div className="flex flex-col space-y-3">
       <button
         onClick={handleKakaoLogin}
-        className="bg-yellow-400 p-3 rounded w-full"
+        className="flex items-center justify-center bg-yellow-400 p-3 rounded w-full"
       >
-        🟡 카카오 로그인
+        <Image
+          src="/sns/kakao.png"
+          alt="카카오 로그인"
+          width={24}
+          height={24}
+          className="mr-2"
+        />
+        카카오 로그인
       </button>
       <button
         onClick={handleGoogleLogin}
-        className="bg-blue-500 text-white p-3 rounded w-full"
+        className="flex items-center justify-center bg-blue-500 text-white p-3 rounded w-full"
       >
-        🔵 Google 로그인
+        <Image
+          src="/sns/google.png"
+          alt="Google 로그인"
+          width={24}
+          height={24}
+          className="mr-2"
+        />
+        Google 로그인
       </button>
       <button
         onClick={handleAppleLogin}
-        className="bg-black text-white p-3 rounded w-full"
+        className="flex items-center justify-center bg-black text-white p-3 rounded w-full"
       >
-        ⚫ Apple 로그인
+        <Image
+          src="/sns/apple.png"
+          alt="Apple 로그인"
+          width={24}
+          height={24}
+          className="mr-2"
+        />
+        Apple 로그인
       </button>
     </div>
   );

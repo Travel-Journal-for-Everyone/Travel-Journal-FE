@@ -1,25 +1,30 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useProfile } from "./hooks/useProfile";
 
 export default function ProfileSetup() {
-  const router = useRouter();
   const [nickname, setNickname] = useState("");
-  const [isNicknameValid, setIsNicknameValid] = useState(true);
+  const [isNicknameValid, setIsNicknameValid] = useState<boolean | null>(null);
   const [profileVisibility, setProfileVisibility] = useState("public");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
+  const { checkNicknameMutation, saveProfileMutation } = useProfile();
+
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    setIsNicknameValid(true); // 입력 중에는 에러 메시지 숨기기
+    setIsNicknameValid(null);
   };
 
-  const checkNicknameAvailability = () => {
-    // ✅ 닉네임 중복 확인 API 요청 (더미 처리)
-    if (nickname === "지지") {
+  const checkNicknameAvailability = async () => {
+    if (!nickname.trim()) return;
+    try {
+      const data = await checkNicknameMutation.mutateAsync(nickname);
+      setIsNicknameValid(data.success);
+    } catch (error) {
+      console.error("❌ 닉네임 중복 확인 오류:", error);
       setIsNicknameValid(false);
     }
   };
@@ -28,32 +33,26 @@ export default function ProfileSetup() {
     const file = e.target.files?.[0];
     if (file) {
       setProfileImage(file);
-      setPreview(URL.createObjectURL(file)); // ✅ 미리보기 URL 생성
+      setPreview(URL.createObjectURL(file));
     }
   };
 
-  const handleProfileSubmit = (e: React.FormEvent) => {
+  const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isNicknameValid || nickname.trim() === "") return;
 
-    // ✅ FormData를 이용해 프로필 정보 저장 API 호출 (예시)
-    const formData = new FormData();
-    formData.append("nickname", nickname);
-    formData.append("profileVisibility", profileVisibility);
-    if (profileImage) {
-      formData.append("profileImage", profileImage);
-    }
-
-    console.log("✅ 프로필 저장 완료:", Object.fromEntries(formData.entries()));
-
-    router.push("/profile/welcome"); // ✅ Welcome 페이지로 이동
+    saveProfileMutation.mutate({
+      nickname,
+      profileVisibility,
+      profileImage,
+    });
   };
 
   return (
     <div className="flex justify-center items-center w-full">
       <form
         onSubmit={handleProfileSubmit}
-        className="w-full  p-8 rounded-lg flex flex-col items-center gap-6"
+        className="w-full p-8 rounded-lg flex flex-col items-center gap-6"
       >
         <h2 className="text-2xl font-semibold">프로필 작성</h2>
 
@@ -64,6 +63,8 @@ export default function ProfileSetup() {
                 src={preview}
                 alt="Profile Preview"
                 className="w-full h-full object-cover"
+                width={96}
+                height={96}
               />
             ) : (
               <span className="text-gray-500 absolute bottom-0 right-0">
@@ -91,19 +92,26 @@ export default function ProfileSetup() {
             <button
               type="button"
               onClick={checkNicknameAvailability}
-              className="bg-gray-300 px-3 py-2 rounded min-w-32"
+              className={`px-3 py-2 rounded min-w-32 ${
+                checkNicknameMutation.isPending ? "bg-gray-400" : "bg-gray-300"
+              }`}
+              disabled={checkNicknameMutation.isPending}
             >
-              중복 확인
+              {checkNicknameMutation.isPending ? "확인 중..." : "중복 확인"}
             </button>
           </div>
-          {!isNicknameValid && (
+          {isNicknameValid === false && (
             <p className="text-red-500 text-sm mt-1">
               이미 사용 중인 아이디입니다.
             </p>
           )}
+          {isNicknameValid === true && (
+            <p className="text-green-500 text-sm mt-1">
+              사용 가능한 닉네임입니다.
+            </p>
+          )}
         </div>
 
-        {/* ✅ 프로필 공개 범위 선택 */}
         <div className="w-full">
           <label className="block text-gray-600">프로필 공개 범위</label>
           <select
@@ -116,16 +124,16 @@ export default function ProfileSetup() {
           </select>
         </div>
 
-        {/* ✅ 작성 완료 버튼 */}
         <button
           type="submit"
           className={`w-full py-2 text-white rounded ${
-            nickname.trim() !== "" && isNicknameValid
-              ? "bg-blue-500"
-              : "bg-gray-300 cursor-not-allowed"
+            saveProfileMutation.isPending
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500"
           }`}
+          disabled={saveProfileMutation.isPending}
         >
-          작성 완료
+          {saveProfileMutation.isPending ? "저장 중..." : "작성 완료"}
         </button>
       </form>
     </div>
