@@ -1,5 +1,3 @@
-"use client";
-
 import { useMutation } from "@tanstack/react-query";
 import { checkNickname } from "@/services/checknickname";
 import { saveProfile } from "@/services/saveprofile";
@@ -25,7 +23,6 @@ export function useProfile() {
       profileImage: File | null;
     }) => saveProfile(nickname, profileVisibility, profileImage, accessToken!),
     onSuccess: () => {
-      console.log("프로필 저장 성공!");
       router.push("/profile/welcome");
     },
     onError: (error) => {

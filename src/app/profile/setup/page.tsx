@@ -43,7 +43,7 @@ export default function ProfileSetup() {
 
     saveProfileMutation.mutate({
       nickname,
-      profileVisibility,
+      profileVisibility: profileVisibility.toUpperCase(),
       profileImage,
     });
   };
@@ -120,6 +120,7 @@ export default function ProfileSetup() {
             className="border p-2 w-full rounded outline-none"
           >
             <option value="public">전체 공개</option>
+            <option value="friends">친구 공개</option>
             <option value="private">비공개</option>
           </select>
         </div>

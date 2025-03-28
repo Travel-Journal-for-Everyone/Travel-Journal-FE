@@ -16,5 +16,6 @@ export async function checkNickname(nickname: string, accessToken: string) {
     throw new Error("닉네임 중복 체크 요청 실패");
   }
 
-  return res.json();
+  const text = await res.text(); // ✅ 문자열로 받기
+  return { success: text === "valid" }; // ✅ 명시적으로 결과 가공
 }

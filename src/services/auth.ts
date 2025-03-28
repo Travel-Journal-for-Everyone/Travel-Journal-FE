@@ -33,7 +33,50 @@ export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
   console.log("✅ 추출된 Access Token:", accessToken);
 
   const user = {
-    id: data.memberId,
+    memberId: data.memberId,
+    refreshToken: data.refreshToken,
+    deviceId: data.deviceId,
+    isFirstLogin: data.isFirstLogin,
+  };
+
+  useAuthStore.getState().setAccessToken(accessToken);
+  useAuthStore.getState().setUser(user);
+
+  return data;
+}
+
+export async function googleLoginRequest(
+  idToken: string
+): Promise<LoginResponse> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/auth/login/google/id-token`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+        "X-Platform": "web",
+      },
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error("구글 로그인 실패");
+  }
+
+  const data: LoginResponse = await res.json();
+  console.log("🔍 Google 로그인 API 응답 데이터:", data);
+
+  const authHeader = res.headers.get("Authorization");
+  const accessToken = authHeader?.replace("Bearer ", "");
+
+  if (!accessToken) {
+    throw new Error("Access Token이 응답 헤더에 없습니다.");
+  }
+
+  console.log("✅ 추출된 Access Token:", accessToken);
+
+  const user = {
+    memberId: data.memberId,
     refreshToken: data.refreshToken,
     deviceId: data.deviceId,
     isFirstLogin: data.isFirstLogin,
