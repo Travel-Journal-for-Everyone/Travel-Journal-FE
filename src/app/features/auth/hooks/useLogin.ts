@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { kakaoLoginRequest } from "@/services/auth";
+import { googleLoginRequest, kakaoLoginRequest } from "@/services/auth";
 
 export function useLogin() {
   const router = useRouter();
@@ -26,3 +26,9 @@ export function useLogin() {
 
   return { login, isLoading: loginMutation.isPending };
 }
+
+export const useGoogleLoginMutation = () => {
+  return useMutation({
+    mutationFn: googleLoginRequest,
+  });
+};

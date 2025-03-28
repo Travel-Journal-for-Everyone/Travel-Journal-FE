@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface User {
-  id: number;
+  memberId: number;
   email?: string;
   name?: string;
   nickname?: string;
@@ -16,7 +16,7 @@ interface AuthState {
   accessToken: string | null;
   setUser: (user: User) => void;
   setAccessToken: (token: string) => void;
-  logout: () => void;
+  resetAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -32,11 +32,11 @@ export const useAuthStore = create<AuthState>()(
         console.log("✅ Access Token 저장:", token);
         set({ accessToken: token });
       },
-      logout: () => {
-        console.log("🚪 로그아웃 수행");
-        set({ user: null, accessToken: null });
-        sessionStorage.removeItem("auth-storage"); // ✅ 세션 스토리지 삭제
-      },
+      resetAuth: () =>
+        set({
+          accessToken: null,
+          user: null,
+        }),
     }),
     {
       name: "auth-storage",
@@ -44,11 +44,11 @@ export const useAuthStore = create<AuthState>()(
         getItem: (name) => {
           const item = sessionStorage.getItem(name);
           console.log(`🔍 세션 스토리지에서 ${name} 가져옴:`, item);
-          return item ? JSON.parse(item) : null; // ✅ JSON 변환
+          return item ? JSON.parse(item) : null;
         },
         setItem: (name, value) => {
           console.log(`💾 세션 스토리지에 ${name} 저장:`, value);
-          sessionStorage.setItem(name, JSON.stringify(value)); // ✅ JSON 변환 후 저장
+          sessionStorage.setItem(name, JSON.stringify(value));
         },
         removeItem: (name) => {
           console.log(`🗑️ 세션 스토리지에서 ${name} 삭제`);
