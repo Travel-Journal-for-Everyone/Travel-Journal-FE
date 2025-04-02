@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Providers from "@/provider";
+import { Providers } from "@/provider";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/ui/Header"; // ✅ Header 유지
