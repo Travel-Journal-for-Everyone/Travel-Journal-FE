@@ -1,10 +1,17 @@
-export default function RegionMap() {
+interface RegionMapComponentProps {
+  onSelectRegion: (region: string) => void;
+}
+
+export default function RegionMapComponent({
+  onSelectRegion,
+}: RegionMapComponentProps) {
+  // 클릭 시 실행
+
   const handleClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     const target = e.target as SVGElement;
     const region = target.id;
-
     if (region) {
-      console.log("✅ 클릭된 지역:", region); // ex) "전라도", "강원도"
+      console.log("✅ 클릭된 지역:", region);
       // 여기서 라우터 이동도 가능:
       // router.push(`/region/${region}`);
     }
@@ -27,6 +34,7 @@ export default function RegionMap() {
           stroke="#EEEEEE"
           strokeWidth="2"
           strokeMiterlimit="10"
+          onClick={() => onSelectRegion("전라도")}
         />
         <path
           id="경상도"
@@ -36,6 +44,7 @@ export default function RegionMap() {
           stroke="#EEEEEE"
           strokeWidth="2"
           strokeMiterlimit="10"
+          onClick={() => onSelectRegion("경상도")}
         />
         <path
           id="충청도"
@@ -45,6 +54,7 @@ export default function RegionMap() {
           stroke="#EEEEEE"
           strokeWidth="2"
           strokeMiterlimit="10"
+          onClick={() => onSelectRegion("충청도")}
         />
         <path
           id="강원도"
@@ -54,15 +64,17 @@ export default function RegionMap() {
           stroke="#EEEEEE"
           strokeWidth="2"
           strokeMiterlimit="10"
+          onClick={() => onSelectRegion("강원도")}
         />
         <path
-          id="서울경기인천"
+          id="수도권"
           className="cursor-pointer hover:fill-blue-200 transition"
           d="M45.6709 51.6406H265.764C272.529 51.6406 278.035 57.1338 278.035 63.8813V242.517H21.0859V76.1653C21.0859 62.627 32.0993 51.6406 45.6709 51.6406Z"
           fill="white"
           stroke="#EEEEEE"
           strokeWidth="2"
           strokeMiterlimit="10"
+          onClick={() => onSelectRegion("수도권")}
         />
         <path
           d="M21.0859 242.561H278.035"
@@ -183,6 +195,7 @@ export default function RegionMap() {
         id="제주도"
         clipPath="url(#clip6_1175_19993)"
         filter="url(#filter1_d_1175_19993)"
+        onClick={() => onSelectRegion("제주도")}
       >
         <path
           className="cursor-pointer hover:fill-blue-200 transition"
