@@ -11,6 +11,12 @@ export interface User {
   deviceId: string;
 }
 
+export interface RegionStat {
+  regionName: string;
+  travelDiaryCount: number;
+  placesCount: number;
+}
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;

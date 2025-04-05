@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemberInfo } from "../features/member/hooks/useMemberInfo";
+import { useMemberInfo } from "../../features/member/hooks/useMemberInfo";
 import MyPageMenu from "./components/mypageMenu";
 
 export default function MyPage() {
@@ -12,7 +12,7 @@ export default function MyPage() {
   const profile = member.profileInfo;
   return (
     <>
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="mx-auto px-4 py-8">
         {/* 닉네임 + 프로필 */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
