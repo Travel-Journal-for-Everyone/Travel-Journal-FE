@@ -9,12 +9,11 @@ import { SetStateAction, useState } from "react";
 import RegionDetailPanel from "@/components/ui/RegionData";
 
 export default function Home() {
-  const { data: member, isLoading } = useMemberInfo();
+  const { data: member } = useMemberInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  if (isLoading || !member) return <div>로딩 중...</div>;
   const mockDiaries: Record<string, any[]> = {};
   const mockPlaces: Record<string, any[]> = {};
-  const regions = member.regions;
+  const regions = member?.regions ?? [];
   return (
     <>
       <RegionDetailPanel
