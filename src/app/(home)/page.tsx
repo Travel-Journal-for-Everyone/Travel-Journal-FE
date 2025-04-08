@@ -3,10 +3,10 @@
 
 import { useMemberInfo } from "../features/member/hooks/useMemberInfo";
 import { Search } from "lucide-react";
-import RegionMapComponent from "@/components/ui/RegioMapComponent";
 import { regionMapData } from "../constants/RegionMapData";
 import { SetStateAction, useState } from "react";
 import RegionDetailPanel from "@/components/ui/RegionData";
+import RegionMap from "@/components/ui/RegionMap";
 
 export default function Home() {
   const { data: member } = useMemberInfo();
@@ -14,6 +14,7 @@ export default function Home() {
   const mockDiaries: Record<string, any[]> = {};
   const mockPlaces: Record<string, any[]> = {};
   const regions = member?.regions ?? [];
+
   return (
     <>
       <RegionDetailPanel
@@ -43,8 +44,8 @@ export default function Home() {
 
         <section className="mt-10">
           <div className="flex justify-center items-center">
-            <div className="relative w-[500px] h-[771px]">
-              <RegionMapComponent
+            <div className="relative w-[500px] h-[741px]">
+              <RegionMap
                 onSelectRegion={(region: SetStateAction<string | null>) =>
                   setSelectedRegion(region)
                 }
@@ -52,7 +53,7 @@ export default function Home() {
               {Object.entries(regionMapData).map(
                 ([regionKey, { label, x, y }]) => {
                   const regionData = regions?.find(
-                    (r: { regionName: string }) => r.regionName === label // ✅ 비교 연산자 고침
+                    (r: { regionName: string }) => r.regionName === label
                   );
 
                   return (
@@ -68,9 +69,7 @@ export default function Home() {
                           {regionData.placesCount}곳
                         </span>
                       ) : (
-                        <span className="text-xs text-gray-400">
-                          데이터 없음
-                        </span>
+                        <span className="text-xs text-gray-400"></span>
                       )}
                     </div>
                   );
