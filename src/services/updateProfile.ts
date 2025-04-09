@@ -1,5 +1,3 @@
-// services/updateProfile.ts
-
 import { apiEndpoint } from "@/app/shared/constants";
 
 interface UpdateProfilePayload {
@@ -17,6 +15,7 @@ export async function updateProfile(payload: UpdateProfilePayload) {
     accountScope: payload.profileVisibility.toUpperCase(),
   });
 
+  // ✅ 서버 요구사항을 만족시키기 위해 항상 포함
   formData.append(
     "profileRequest",
     new Blob([jsonBody], { type: "application/json" })
