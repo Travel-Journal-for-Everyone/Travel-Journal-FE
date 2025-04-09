@@ -3,13 +3,26 @@
 import Image from "next/image";
 import { useMemberInfo } from "../../features/member/hooks/useMemberInfo";
 import MyPageMenu from "./components/mypageMenu";
-
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Globe, Lock, User } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from "react";
 
 export default function MyPage() {
+  const { setProfileInfo } = useAuthStore();
   const Router = useRouter();
-  const { data: member, isLoading } = useMemberInfo();
+  const { data: member, isLoading, refetch } = useMemberInfo();
+
+  useEffect(() => {
+    if (member?.profileInfo) {
+      const { nickname, accountScope, profileImageUrl } = member.profileInfo;
+      setProfileInfo({ nickname, accountScope, profileImageUrl });
+    }
+  }, [member]);
+
+  useEffect(() => {
+    refetch(); // 페이지 마운트 시 서버 데이터 새로 요청
+  }, []);
 
   if (isLoading || !member) return <div>로딩 중...</div>;
   const handleBack = () => {
@@ -76,7 +89,7 @@ export default function MyPage() {
           </div>
         </div>
       </div>
-      <MyPageMenu></MyPageMenu>
+      <MyPageMenu />
     </>
   );
 }

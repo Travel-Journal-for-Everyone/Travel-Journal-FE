@@ -2,17 +2,21 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProfileEdit } from "./hooks/useProfileEdit";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function ProfileEdit() {
   const router = useRouter();
 
+  const profileInfo = useAuthStore((state) => state.profileInfo);
+  const accessToken = useAuthStore.getState().accessToken;
+
   const [nickname, setNickname] = useState("");
   const [profileVisibility, setProfileVisibility] = useState("public");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
   const {
     checkNicknameMutation,
     updateProfileMutation,
@@ -20,9 +24,17 @@ export default function ProfileEdit() {
     setIsNicknameValid,
   } = useProfileEdit();
 
+  useEffect(() => {
+    if (profileInfo) {
+      setNickname(profileInfo.nickname);
+      setProfileVisibility(profileInfo.accountScope.toLowerCase());
+      setPreview(profileInfo.profileImageUrl);
+    }
+  }, [profileInfo]);
+
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    setIsNicknameValid(null);
+    setIsNicknameValid(null); // 변경 시 중복확인 초기화
   };
 
   const checkNicknameAvailability = async () => {
@@ -46,12 +58,25 @@ export default function ProfileEdit() {
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isNicknameValid || nickname.trim() === "") return;
 
-    const accessToken = useAuthStore.getState().accessToken; // ✅ 추가
-
-    if (!accessToken) {
+    if (!accessToken || !profileInfo) {
       alert("로그인이 필요합니다.");
+      return;
+    }
+
+    const nicknameChanged =
+      nickname.trim() && nickname !== profileInfo.nickname;
+    const visibilityChanged =
+      profileVisibility.toUpperCase() !== profileInfo.accountScope;
+    const imageChanged = !!profileImage;
+
+    if (!nicknameChanged && !visibilityChanged && !imageChanged) {
+      alert("변경된 내용이 없습니다.");
+      return;
+    }
+
+    if (nicknameChanged && !isNicknameValid) {
+      alert("닉네임 중복 확인이 필요합니다.");
       return;
     }
 
@@ -59,11 +84,24 @@ export default function ProfileEdit() {
       {
         nickname,
         profileVisibility,
-        profileImage,
-        accessToken, // ✅ 명시적으로 전달
+        profileImage: imageChanged ? profileImage : null,
+        accessToken,
       },
       {
         onSuccess: () => {
+          const updatedProfileImageUrl = imageChanged
+            ? preview
+            : useAuthStore.getState().profileInfo?.profileImageUrl ?? "";
+
+          useAuthStore.getState().setProfileInfo({
+            nickname,
+            accountScope: profileVisibility.toUpperCase() as
+              | "PUBLIC"
+              | "FRIENDS"
+              | "PRIVATE",
+            profileImageUrl: updatedProfileImageUrl,
+          });
+
           alert("✅ 프로필이 저장되었습니다!");
           router.push("/mypage");
         },
@@ -153,6 +191,7 @@ export default function ProfileEdit() {
             <option value="private">비공개</option>
           </select>
         </div>
+
         <button
           type="submit"
           className={`w-full py-2 text-white rounded ${
