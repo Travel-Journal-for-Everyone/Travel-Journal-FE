@@ -1,0 +1,32 @@
+src/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── error.tsx
+│   ├── not-found.tsx
+│   ├── loading.tsx
+│   └── api/route.ts
+│
+├── components/
+│   └── common/            # Button, Modal 등 범용 UI
+│
+├── features/
+│   └── auth/
+│       ├── components/
+│       ├── hooks/
+│       ├── ui/
+│       └── vm/
+│
+├── entities/
+│   └── member/
+│       ├── model.ts
+│       └── schema.ts
+│
+├── shared/
+│   ├── api/               # axiosInstance.ts 등
+│   ├── config/            # env, constants.ts 등
+│   ├── lib/               # cookie, date, file 유틸
+│   ├── styles/            # tailwind config, global css
+│
+├── store/
+│   └── useAuthStore.ts

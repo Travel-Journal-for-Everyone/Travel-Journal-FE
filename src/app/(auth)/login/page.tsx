@@ -1,5 +1,4 @@
-// src/app/(auth)/page.tsx
-import LoginForm from "@/app/features/auth/components/LoginForm";
+import LoginForm from "@/features/auth/components/LoginForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useMemberInfo } from "../../features/member/hooks/useMemberInfo";
 import MyPageMenu from "./components/mypageMenu";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Globe, Lock, User } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect } from "react";
+import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
 
 export default function MyPage() {
   const { setProfileInfo } = useAuthStore();
@@ -21,7 +21,7 @@ export default function MyPage() {
   }, [member]);
 
   useEffect(() => {
-    refetch(); // 페이지 마운트 시 서버 데이터 새로 요청
+    refetch();
   }, []);
 
   if (isLoading || !member) return <div>로딩 중...</div>;

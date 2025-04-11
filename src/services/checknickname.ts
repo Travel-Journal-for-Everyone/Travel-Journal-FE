@@ -1,4 +1,4 @@
-import { apiEndpoint } from "@/app/shared/constants";
+import { apiEndpoint } from "@/app/shared/config/constants";
 
 export async function checkNickname(nickname: string, accessToken: string) {
   const res = await fetch(

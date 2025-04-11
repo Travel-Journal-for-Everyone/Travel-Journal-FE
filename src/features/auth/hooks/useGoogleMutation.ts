@@ -1,4 +1,4 @@
-import { apiEndpoint } from "@/app/shared/constants";
+import { apiEndpoint } from "@/app/shared/config/constants";
 import { useMutation } from "@tanstack/react-query";
 
 export const useGoogleLoginMutation = () => {

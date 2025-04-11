@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemberInfo } from "@/app/features/member/hooks/useMemberInfo";
+import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
 import Button from "./CommonBtn";
 import Image from "next/image";
 

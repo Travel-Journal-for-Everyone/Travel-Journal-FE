@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMemberInfo } from "../features/member/hooks/useMemberInfo";
+import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
 import { Search } from "lucide-react";
-import { regionMapData } from "../constants/RegionMapData";
+import { regionMapData } from "@/features/map/constants/RegionMapData";
 import { SetStateAction, useState } from "react";
-import RegionDetailPanel from "@/components/ui/RegionData";
-import RegionMap from "@/components/ui/RegionMap";
+import RegionDetailPanel from "@/features/map/components/RegionData";
+import RegionMap from "@/features/map/RegionMap";
 
 export default function Home() {
   const { data: member } = useMemberInfo();

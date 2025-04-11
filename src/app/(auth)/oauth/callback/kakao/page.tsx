@@ -2,7 +2,7 @@
 "use client";
 
 import { Suspense } from "react";
-import KakaoCallbackHandler from "./kakaoCallbackHandler";
+import KakaoCallbackHandler from "@/features/auth/hooks/kakaoCallbackHandler";
 
 export default function KakaoCallback() {
   return (

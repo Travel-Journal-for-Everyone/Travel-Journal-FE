@@ -1,8 +1,6 @@
-"use client";
-
 import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useLogin } from "@/app/features/auth/hooks/useLogin";
+import { useLogin } from "./useLogin";
 
 export default function KakaoCallbackHandler() {
   const searchParams = useSearchParams();
