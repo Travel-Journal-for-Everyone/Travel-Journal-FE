@@ -1,5 +1,5 @@
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import { apiEndpoint } from "@/app/shared/constants";
+import { apiEndpoint } from "@/app/shared/config/constants";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export async function logOut(deviceId: string) {

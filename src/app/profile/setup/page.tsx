@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useProfile } from "./hooks/useProfile";
+import { useProfile } from "@/features/profile/setup/hooks/useProfile";
 
 export default function ProfileSetup() {
   const [nickname, setNickname] = useState("");

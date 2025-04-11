@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { useAuthStore } from "@/store/useAuthStore";
-import { apiEndpoint } from "@/app/shared/constants";
+import { apiEndpoint } from "@/app/shared/config/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchWithAuth<T = any>(

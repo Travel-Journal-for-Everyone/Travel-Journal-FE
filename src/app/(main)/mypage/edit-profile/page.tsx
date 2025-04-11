@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useProfileEdit } from "./hooks/useProfileEdit";
+import { useProfileEdit } from "@/features/profile/edit/hooks/useProfileEdit";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function ProfileEdit() {
