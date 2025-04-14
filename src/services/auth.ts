@@ -1,5 +1,4 @@
-import { useAuthStore } from "@/store/useAuthStore";
-
+import { setCookie } from "@/lib/cookieUtils";
 interface LoginResponse {
   memberId: number;
   isFirstLogin: boolean;
@@ -16,31 +15,19 @@ export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
     }
   );
 
-  if (!res.ok) {
-    throw new Error("카카오 로그인 실패");
-  }
+  if (!res.ok) throw new Error("카카오 로그인 실패");
 
   const data: LoginResponse = await res.json();
-  console.log("🔍 로그인 API 응답 데이터:", data);
-
   const authHeader = res.headers.get("Authorization");
   const accessToken = authHeader?.replace("Bearer ", "");
 
-  if (!accessToken) {
-    throw new Error("Access Token이 응답 헤더에 없습니다.");
-  }
+  if (!accessToken) throw new Error("Access Token이 없습니다.");
 
-  console.log("✅ 추출된 Access Token:", accessToken);
+  const { refreshToken, deviceId } = data;
 
-  const user = {
-    memberId: data.memberId,
-    refreshToken: data.refreshToken,
-    deviceId: data.deviceId,
-    isFirstLogin: data.isFirstLogin,
-  };
-
-  useAuthStore.getState().setAccessToken(accessToken);
-  useAuthStore.getState().setUser(user);
+  setCookie("accessToken", accessToken);
+  setCookie("refreshToken", refreshToken);
+  setCookie("deviceId", deviceId);
 
   return data;
 }
@@ -75,15 +62,9 @@ export async function googleLoginRequest(
 
   console.log("✅ 추출된 Access Token:", accessToken);
 
-  const user = {
-    memberId: data.memberId,
-    refreshToken: data.refreshToken,
-    deviceId: data.deviceId,
-    isFirstLogin: data.isFirstLogin,
-  };
-
-  useAuthStore.getState().setAccessToken(accessToken);
-  useAuthStore.getState().setUser(user);
+  setCookie("accessToken", accessToken);
+  setCookie("refreshToken", data.refreshToken);
+  setCookie("deviceId", data.deviceId);
 
   return data;
 }
