@@ -1,10 +1,9 @@
-import { apiEndpoint } from "@/app/shared/config/constants";
+import axiosInstance from "@/lib/axiosInstance";
 
 export async function saveProfile(
   nickname: string,
   profileVisibility: string,
-  profileImage: File | null,
-  accessToken: string
+  profileImage: File | null
 ) {
   const formData = new FormData();
 
@@ -12,6 +11,7 @@ export async function saveProfile(
     nickname,
     accountScope: profileVisibility.toUpperCase(),
   });
+
   formData.append(
     "firstLoginRequest",
     new Blob([jsonBody], { type: "application/json" })
@@ -21,18 +21,15 @@ export async function saveProfile(
     formData.append("profileImage", profileImage);
   }
 
-  const res = await fetch(`${apiEndpoint}/v1/member/complete-first-login`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: formData,
-  });
+  const res = await axiosInstance.post(
+    "/v1/member/complete-first-login",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`프로필 저장 실패: ${error}`);
-  }
-
-  return res.json();
+  return res.data;
 }

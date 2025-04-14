@@ -1,15 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { checkNickname } from "@/services/checknickname";
 import { saveProfile } from "@/services/saveprofile";
-import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 
 export function useProfile() {
   const router = useRouter();
-  const accessToken = useAuthStore.getState().accessToken;
 
   const checkNicknameMutation = useMutation({
-    mutationFn: (nickname: string) => checkNickname(nickname, accessToken!),
+    mutationFn: (nickname: string) => checkNickname(nickname),
   });
 
   const saveProfileMutation = useMutation({
@@ -21,7 +19,7 @@ export function useProfile() {
       nickname: string;
       profileVisibility: string;
       profileImage: File | null;
-    }) => saveProfile(nickname, profileVisibility, profileImage, accessToken!),
+    }) => saveProfile(nickname, profileVisibility, profileImage),
     onSuccess: () => {
       router.push("/profile/welcome");
     },
