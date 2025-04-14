@@ -1,21 +1,6 @@
-import { apiEndpoint } from "@/app/shared/config/constants";
+import axiosInstance from "@/lib/axiosInstance";
 
-export async function checkNickname(nickname: string, accessToken: string) {
-  const res = await fetch(
-    `${apiEndpoint}/v1/member/check-nickname/${nickname}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error("닉네임 중복 체크 요청 실패");
-  }
-
-  const text = await res.text(); // ✅ 문자열로 받기
-  return { success: text === "valid" }; // ✅ 명시적으로 결과 가공
+export async function checkNickname(nickname: string) {
+  const res = await axiosInstance.get(`/v1/members/check-nickname/${nickname}`);
+  return res.data;
 }

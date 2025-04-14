@@ -1,9 +1,17 @@
 module.exports = {
   // output: 'export',
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "travel-journal-s3.s3.amazonaws.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "travel-journal-s3.s3.amazonaws.com",
+        pathname: "/**",
+      },
     ],
   },
   reactStrictMode: true,

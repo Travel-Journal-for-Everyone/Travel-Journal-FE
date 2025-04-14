@@ -1,35 +1,41 @@
-import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { deleteCookie } from "@/lib/cookieUtils";
 import { apiEndpoint } from "@/app/shared/config/constants";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/useAuthStore";
+import axiosInstance from "@/lib/axiosInstance";
 
 export async function logOut(deviceId: string) {
-  const accessToken = useAuthStore.getState().accessToken;
-
-  const res = await fetch(
+  const res = await axiosInstance.post(
     `${apiEndpoint}/v1/auth/logout?deviceId=${encodeURIComponent(deviceId)}`,
+    FormData,
     {
-      method: "POST",
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
       },
     }
   );
-  const result = await res.text();
-  if (!res.ok) {
-    throw new Error("로그아웃 실패");
-  }
-  return result;
+
+  deleteCookie("accessToken");
+  deleteCookie("refreshToken");
+  deleteCookie("deviceId");
+  deleteCookie("memberId");
+
+  return res.data as string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useLogOut(): UseMutationResult<any, Error, string, unknown> {
+export function useLogOut(): UseMutationResult<
+  string, // ✅ 서버 응답 타입 (res.data)
+  Error,
+  string, // ✅ 변수(deviceId)
+  unknown
+> {
   return useMutation({
-    mutationFn: (deviceId: string) => logOut(deviceId),
+    mutationFn: logOut,
     onSuccess: () => {
-      useAuthStore.getState().resetAuth(); // 상태 초기화
+      useAuthStore.getState().resetAuth();
     },
-    onError: (error) => {
-      console.error("로그아웃 실패:", error);
+    onError: (err) => {
+      console.error("❌ 로그아웃 실패:", err);
     },
   });
 }
