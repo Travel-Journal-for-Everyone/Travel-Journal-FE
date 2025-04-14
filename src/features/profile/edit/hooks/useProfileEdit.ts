@@ -11,7 +11,7 @@ export function useProfileEdit() {
   const checkNicknameMutation = useMutation({
     mutationFn: async (nickname: string) => {
       if (!accessToken) throw new Error("accessToken 없음");
-      const result = await checkNickname(nickname, accessToken);
+      const result = await checkNickname(nickname);
       setIsNicknameValid(result.success);
       return result;
     },
