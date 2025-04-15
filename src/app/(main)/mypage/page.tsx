@@ -2,28 +2,30 @@
 
 import Image from "next/image";
 import MyPageMenu from "./components/mypageMenu";
-import { ChevronLeft, Globe, Lock, User } from "lucide-react";
+import { Globe, Lock, User } from "lucide-react";
 import { useProfile } from "@/features/member/hooks/useProfile";
-import { useRouter } from "next/navigation";
+
+import ProfileCard from "@/features/common/ProfileCard";
+import { TopBar } from "@/features/common/TopBar";
 
 export default function MyPage() {
   const { data, isLoading } = useProfile();
-  const router = useRouter();
 
   if (isLoading || !data) return <div>로딩 중...</div>;
 
-  const handleBack = () => {
-    router.push("/");
-  };
-
   return (
     <>
-      <div className="mx-auto px-4 py-8">
-        <div className="flex my-4 -ml-2">
-          <button onClick={handleBack}>
-            <ChevronLeft />
-          </button>
-        </div>
+      <ProfileCard
+        nickname={data.nickname}
+        profileImageUrl={data.profileImageUrl}
+        accountScope={data.accountScope}
+        followerCount={data.followerCount}
+        followingCount={data.followingCount}
+        travelDiaryCount={data.travelDiaryCount}
+        placesCount={data.placesCount}
+      />
+      <TopBar title="마이페이지" backTo="/" />
+      <div className="hidden md:flex mx-auto px-4 py-8">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-4">
             <Image

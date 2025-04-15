@@ -9,7 +9,7 @@ const Header = () => {
   const { data: member, isLoading } = useMemberInfo();
 
   return (
-    <header className="w-full bg-white shadow-sm border-bborder-gray-200 fixed top-0 left-0 z-50 py-4">
+    <header className="hidden md:block w-full bg-white shadow-sm fixed top-0 left-0 z-50 py-4">
       <div className="md:mx-20 flex justify-between items-center py-1 px-2 md:px-6">
         <div className="flex gap-4 items-center">
           <Link href="/" className="text-xl font-bold text-gray-800">
