@@ -11,8 +11,7 @@ import RegionMap from "@/features/map/RegionMap";
 export default function Home() {
   const { data: member } = useMemberInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  // const mockDiaries: Record<string, any[]> = {};
-  // const mockPlaces: Record<string, any[]> = {};
+
   const regions = member?.regions ?? [];
 
   return (
@@ -21,8 +20,6 @@ export default function Home() {
         isOpen={!!selectedRegion}
         onClose={() => setSelectedRegion(null)}
         regionName={selectedRegion || ""}
-        // diaries={mockDiaries[selectedRegion ?? ""] || []}
-        // places={mockPlaces[selectedRegion ?? ""] || []}
       />
       <div className="py-8 flex justify-between mx-20 max-w-screen-lg my-10">
         <div className="flex flex-col items-center gap-4 mt-12">
