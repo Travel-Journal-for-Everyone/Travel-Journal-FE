@@ -14,7 +14,7 @@ export function useJournalRegieon(regionName: string) {
     queryKey: ["journalRegion", regionName, user?.memberId],
     queryFn: async () => {
       const { data } = await axiosInstance.get(
-        `/v1/members/${user!.memberId}/journals/regieon/${regionName}`
+        `/v1/members/${user!.memberId}/journals/region/${regionName}`
       );
       return data;
     },

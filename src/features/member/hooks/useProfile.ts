@@ -18,7 +18,7 @@ export function useProfile() {
   return useQuery<ProfileResponse>({
     queryKey: ["profile"],
     queryFn: async () => {
-      const { data } = await axiosInstance.get("/v1/members/profile");
+      const { data } = await axiosInstance.get("/v1/member/profile");
       return data;
     },
     staleTime: 1000 * 60 * 5,
