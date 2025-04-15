@@ -1,37 +1,38 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useJournalRegieon } from "../hooks/useJournalRegieon";
 
 interface RegionDetailPanelProps {
   isOpen: boolean;
   onClose: () => void;
   regionName: string;
-  diaries: { title: string; image: string; location: string }[];
-  places: { title: string; image: string; location: string }[];
 }
 
 export default function RegionDetailPanel({
   isOpen,
   onClose,
   regionName,
-  diaries,
-  places,
 }: RegionDetailPanelProps) {
   const [tab, setTab] = useState<"diary" | "place">("diary");
+
+  const { data, isLoading } = useJournalRegieon(regionName);
+
+  const diaries = data?.diaries || [];
+  const places = data?.places || [];
 
   return (
     <>
       <motion.button
         onClick={onClose}
         animate={{
-          right: isOpen ? 400 : 0, // 패널 열리면 400px 밖, 닫히면 우측 끝
+          right: isOpen ? 400 : 0,
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-64 transform bg-white border rounded-sm  py-4 z-50"
-        style={{ zIndex: 60 }} // 패널보다 위
+        className="fixed top-64 transform bg-white border rounded-sm py-4 z-50"
+        style={{ zIndex: 60 }}
       >
         {isOpen ? <ChevronRight /> : <ChevronLeft />}
       </motion.button>
@@ -40,7 +41,7 @@ export default function RegionDetailPanel({
         initial={{ x: "100%" }}
         animate={{ x: isOpen ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-xl z-50 overflow-y-auto "
+        className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-xl z-50 overflow-y-auto"
       >
         <div className="p-6">
           <h2 className="text-lg font-bold text-center">{regionName}</h2>
@@ -68,19 +69,23 @@ export default function RegionDetailPanel({
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            {(tab === "diary" ? diaries : places).map((item, i) => (
-              <div key={i}>
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-24 object-cover rounded-md"
-                />
-                <div className="text-sm mt-1 font-medium">{item.title}</div>
-                <div className="text-xs text-gray-500">{item.location}</div>
-              </div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center text-gray-400 mt-10">로딩 중...</div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {(tab === "diary" ? diaries : places).map((item, i) => (
+                <div key={i}>
+                  {/* <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-24 object-cover rounded-md"
+                  /> */}
+                  <div className="text-sm mt-1 font-medium">{item.title}</div>
+                  <div className="text-xs text-gray-500">{item.location}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </motion.div>
     </>

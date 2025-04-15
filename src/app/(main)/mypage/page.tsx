@@ -2,42 +2,38 @@
 
 import Image from "next/image";
 import MyPageMenu from "./components/mypageMenu";
-import { useRouter } from "next/navigation";
 import { ChevronLeft, Globe, Lock, User } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect } from "react";
-import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
+import { useProfile } from "@/features/member/hooks/useProfile";
+import { useRouter } from "next/navigation";
 
 export default function MyPage() {
   const { setProfileInfo } = useAuthStore();
-  const Router = useRouter();
-  const { data: member, isLoading, refetch } = useMemberInfo();
+  const { data, isLoading } = useProfile();
+  const router = useRouter();
 
   useEffect(() => {
-    if (member?.profileInfo) {
-      const { nickname, accountScope, profileImageUrl } = member.profileInfo;
+    if (data?.profileInfo) {
+      const { nickname, accountScope, profileImageUrl } = data.profileInfo;
       setProfileInfo({ nickname, accountScope, profileImageUrl });
     }
-  }, [member]);
+  }, [data]);
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  if (isLoading || !data?.profileInfo) return <div>로딩 중...</div>;
 
-  if (isLoading || !member) return <div>로딩 중...</div>;
+  const profile = data.profileInfo;
+
   const handleBack = () => {
-    Router.push("/");
+    router.push("/");
   };
-  const profile = member.profileInfo;
+
   return (
     <>
       <div className="mx-auto px-4 py-8">
-        <div
-          className="flex my-4 -ml-2
-        "
-        >
+        <div className="flex my-4 -ml-2">
           <button onClick={handleBack}>
-            <ChevronLeft />{" "}
+            <ChevronLeft />
           </button>
         </div>
         <div className="flex items-center gap-4">
@@ -53,37 +49,29 @@ export default function MyPage() {
 
           <div className="flex-1">
             <div className="flex items-center mb-4 gap-1">
-              <h2 className="text-xl font-bold ">{profile.nickname}</h2>
+              <h2 className="text-xl font-bold">{profile.nickname}</h2>
               <div className="text-gray-500">
                 {profile.accountScope === "PUBLIC" && <Globe className="w-4" />}
                 {profile.accountScope === "FRIENDS" && <User className="w-4" />}
                 {profile.accountScope === "PRIVATE" && <Lock className="w-4" />}
               </div>
             </div>
-            <dl className="flex justify-between ">
+            <dl className="flex justify-between">
               <div className="flex items-center gap-2">
-                <dt className=" text-gray-500">팔로워</dt>
-                <dd className=" font-semibold">
-                  {String(profile.followerCount)}
-                </dd>
+                <dt className="text-gray-500">팔로워</dt>
+                <dd className="font-semibold">{profile.followerCount}</dd>
               </div>
               <div className="flex items-center gap-2">
-                <dt className=" text-gray-500">팔로잉</dt>
-                <dd className=" font-semibold">
-                  {String(profile.followingCount)}
-                </dd>
+                <dt className="text-gray-500">팔로잉</dt>
+                <dd className="font-semibold">{profile.followingCount}</dd>
               </div>
               <div className="flex items-center gap-2">
-                <dt className=" text-gray-500">여행일지</dt>
-                <dd className=" font-semibold">
-                  {String(profile.travelDiaryCount)}
-                </dd>
+                <dt className="text-gray-500">여행일지</dt>
+                <dd className="font-semibold">{profile.travelDiaryCount}</dd>
               </div>
               <div className="flex items-center gap-2">
-                <dt className=" text-gray-500">플레이스</dt>
-                <dd className=" font-semibold">
-                  {String(profile.placesCount)}
-                </dd>
+                <dt className="text-gray-500">플레이스</dt>
+                <dd className="font-semibold">{profile.placesCount}</dd>
               </div>
             </dl>
           </div>
