@@ -12,6 +12,16 @@ module.exports = {
         hostname: "travel-journal-s3.s3.amazonaws.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "search.pstatic.net",
+        pathname: "/**", // 모든 경로 허용
+      },
+      {
+        protocol: "https",
+        hostname: "blogfiles.naver.net",
+        pathname: "/**", // 필요 시 추가
+      },
     ],
   },
   reactStrictMode: true,
