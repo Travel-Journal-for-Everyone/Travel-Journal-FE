@@ -16,14 +16,13 @@ const decodeUnicodeId = (region: string | undefined) => {
 
 export default function RegionMap({ onSelectRegion }: RegionMapComponentProps) {
   return (
-    <div className="w-full max-w-[485px]">
+    <div className="w-full">
       <RegionSVG
         onClickCapture={(e: { target: SVGElement }) => {
           const target = e.target as SVGElement;
           const region = decodeUnicodeId(target.dataset.region);
 
           if (region) {
-            console.log("✅ 클릭된 지역:", region);
             onSelectRegion(region);
           }
         }}

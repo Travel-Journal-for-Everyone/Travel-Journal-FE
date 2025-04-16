@@ -32,8 +32,8 @@ export default function ProfileCard({
     );
 
   return (
-    <div className="md:hidden flex items-center gap-4 px-4 py-4">
-      <div className="relative w-16 h-16 overflow-hidden">
+    <div className="md:hidden flex items-center gap-4 mx-2">
+      <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
         <Image
           src={profileImageUrl || "/default-avatar.png"}
           alt="프로필 이미지"
