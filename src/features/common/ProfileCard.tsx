@@ -1,0 +1,70 @@
+"use client";
+
+import Image from "next/image";
+import { Globe, Lock, User } from "lucide-react";
+
+interface ProfileCardProps {
+  nickname: string;
+  profileImageUrl: string;
+  accountScope: "PUBLIC" | "FRIENDS" | "PRIVATE";
+  followerCount: number;
+  followingCount: number;
+  travelDiaryCount: number;
+  placesCount: number;
+}
+
+export default function ProfileCard({
+  nickname,
+  profileImageUrl,
+  accountScope,
+  followerCount,
+  followingCount,
+  travelDiaryCount,
+  placesCount,
+}: ProfileCardProps) {
+  const scopeIcon =
+    accountScope === "PUBLIC" ? (
+      <Globe className="w-4 h-4" />
+    ) : accountScope === "FRIENDS" ? (
+      <User className="w-4 h-4" />
+    ) : (
+      <Lock className="w-4 h-4" />
+    );
+
+  return (
+    <div className="md:hidden flex items-center gap-4 mx-2">
+      <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
+        <Image
+          src={profileImageUrl || "/default-avatar.png"}
+          alt="프로필 이미지"
+          fill
+          className="rounded-full object-contain "
+        />
+      </div>
+      <div className="flex-1">
+        <div className="flex items-center gap-1 mb-2">
+          <h2 className="text-base font-semibold">{nickname}</h2>
+          {scopeIcon}
+        </div>
+        <dl className="flex justify-between text-center text-sm">
+          <div>
+            <dt className="text-gray-500">팔로워</dt>
+            <dd className="font-bold">{followerCount}</dd>
+          </div>
+          <div>
+            <dt className="text-gray-500">팔로잉</dt>
+            <dd className="font-bold">{followingCount}</dd>
+          </div>
+          <div>
+            <dt className="text-gray-500">여행 일지</dt>
+            <dd className="font-bold">{travelDiaryCount}</dd>
+          </div>
+          <div>
+            <dt className="text-gray-500">플레이스</dt>
+            <dd className="font-bold">{placesCount}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  );
+}

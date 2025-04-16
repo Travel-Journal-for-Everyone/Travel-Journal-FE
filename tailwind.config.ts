@@ -51,6 +51,10 @@ export default {
         buttonPrimary: ["14px", { fontWeight: "500" }], // Medium
         buttonSecondary: ["16px", { fontWeight: "500" }], // Medium
       },
+      height: {
+        "screen-without-header": "calc(100vh - 3rem)",
+        "screen-without-nav": "calc(100vh - 4rem)",
+      },
     },
   },
 

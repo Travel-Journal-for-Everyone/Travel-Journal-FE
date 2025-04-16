@@ -1,14 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useProfileEdit } from "@/features/profile/edit/hooks/useProfileEdit";
 import { useAuthStore } from "@/store/useAuthStore";
+import { TopBar } from "@/features/common/TopBar";
 
 export default function ProfileEdit() {
-  const router = useRouter();
-
   const profileInfo = useAuthStore((state) => state.profileInfo);
   const accessToken = useAuthStore.getState().accessToken;
 
@@ -75,11 +73,6 @@ export default function ProfileEdit() {
       return;
     }
 
-    if (nicknameChanged && !isNicknameValid) {
-      alert("닉네임 중복 확인이 필요합니다.");
-      return;
-    }
-
     updateProfileMutation.mutate(
       {
         nickname,
@@ -103,7 +96,8 @@ export default function ProfileEdit() {
           });
 
           alert("✅ 프로필이 저장되었습니다!");
-          router.push("/mypage");
+
+          window.location.href = "/mypage";
         },
         onError: (err) => {
           console.error("❌ 프로필 저장 실패:", err);
@@ -114,13 +108,12 @@ export default function ProfileEdit() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full">
+    <Fragment>
+      <TopBar title="프로필 수정" backTo="/mypage" />
       <form
         onSubmit={handleProfileSubmit}
-        className="w-full p-8 rounded-lg flex flex-col items-center gap-6"
+        className="w-full rounded-lg flex flex-col items-center gap-6 mt-6"
       >
-        <h2 className="text-2xl font-semibold">프로필 수정</h2>
-
         <label className="relative cursor-pointer">
           <div className="w-24 h-24 rounded-full border overflow-hidden flex items-center justify-center bg-gray-200">
             {preview ? (
@@ -204,6 +197,6 @@ export default function ProfileEdit() {
           {updateProfileMutation.isPending ? "저장 중..." : "작성 완료"}
         </button>
       </form>
-    </div>
+    </Fragment>
   );
 }

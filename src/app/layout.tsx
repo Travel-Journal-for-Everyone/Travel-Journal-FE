@@ -3,6 +3,7 @@ import { Providers } from "@/provider";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/features/common/Header";
+import MobileNavBar from "@/features/common/MobileNavBar";
 
 const pretendard = localFont({
   src: [
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className={`${pretendard.variable} antialiased`}>
         <Providers>
           <Header />
+          <MobileNavBar />
           {children}
         </Providers>
       </body>

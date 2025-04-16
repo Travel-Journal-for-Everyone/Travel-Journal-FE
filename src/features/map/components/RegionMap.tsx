@@ -21,9 +21,7 @@ export default function RegionMap({ onSelectRegion }: RegionMapComponentProps) {
         onClickCapture={(e: { target: SVGElement }) => {
           const target = e.target as SVGElement;
           const region = decodeUnicodeId(target.dataset.region);
-
           if (region) {
-            console.log("✅ 클릭된 지역:", region);
             onSelectRegion(region);
           }
         }}

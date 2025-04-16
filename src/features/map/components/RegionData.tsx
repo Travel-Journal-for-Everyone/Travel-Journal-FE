@@ -36,7 +36,7 @@ export default function RegionDetailPanel({
           right: isOpen ? 400 : 0,
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-64 transform bg-white border rounded-sm py-4 z-50"
+        className="fixed top-64 right-0 transform bg-white border rounded-sm py-4 z-50"
         style={{ zIndex: 60 }}
       >
         {isOpen ? <ChevronRight /> : <ChevronLeft />}
@@ -97,7 +97,7 @@ export default function RegionDetailPanel({
                   <div className="text-xs text-gray-500 mt-1">
                     <span className="font-semibold">
                       {item.nights}박 {item.days}일
-                    </span>{" "}
+                    </span>
                     {item.startDate} ~ {item.endDate}
                   </div>
                 </div>
