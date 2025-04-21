@@ -26,6 +26,11 @@ export default function ProfileSetup() {
       if (status === "valid") {
         setIsNicknameValid(true);
         setLastCheckedNickname(nickname);
+      } else if (status === "duplicate") {
+        setIsNicknameValid(false);
+      } else if (status === "containsBadWord") {
+        setIsNicknameValid(false);
+        alert("비속어가 포함된 닉네임은 사용할 수 없습니다.");
       }
     } catch (error) {
       console.error("❌ 닉네임 중복 확인 오류:", error);
