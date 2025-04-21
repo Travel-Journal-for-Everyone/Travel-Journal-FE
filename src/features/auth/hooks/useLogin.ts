@@ -4,27 +4,32 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { googleLoginRequest, kakaoLoginRequest } from "@/services/auth";
 
+interface KakaoLoginParams {
+  code: string;
+}
+
 export function useLogin() {
   const router = useRouter();
-  const loginMutation = useMutation({
-    mutationFn: kakaoLoginRequest, // ✅ 로그인 API 요청
+
+  const kakaoLoginMutation = useMutation({
+    mutationFn: ({ code }: KakaoLoginParams) => kakaoLoginRequest(code),
     onSuccess: (data) => {
       if (data.isFirstLogin) {
         router.push("/profile/setup");
       } else {
-        router.push("/"); // ✅ 일반 로그인: 홈으로 이동
+        router.push("/");
       }
     },
     onError: (error) => {
-      console.error("❌ 로그인 실패:", error);
+      console.error("❌ 카카오 로그인 실패:", error);
     },
   });
 
-  const login = async (code: string) => {
-    loginMutation.mutate(code);
+  const login = (params: KakaoLoginParams) => {
+    kakaoLoginMutation.mutate(params);
   };
 
-  return { login, isLoading: loginMutation.isPending };
+  return { login, isLoading: kakaoLoginMutation.isPending };
 }
 
 export const useGoogleLoginMutation = () => {

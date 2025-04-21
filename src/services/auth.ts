@@ -12,7 +12,10 @@ export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/auth/login/kakao/callback?code=${code}`,
     {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Platform": "web",
+      },
     }
   );
 
