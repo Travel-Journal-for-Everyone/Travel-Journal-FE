@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import MyPageMenu from "./components/mypageMenu";
+import MyPageMenu from "@/features/mypage/components/mypageMenu";
 import { Globe, Lock, User } from "lucide-react";
 import { useProfile } from "@/features/member/hooks/useProfile";
 
 import ProfileCard from "@/features/common/ProfileCard";
 import { TopBar } from "@/features/common/TopBar";
+import { BtnLogout } from "@/features/common/btnLogout";
 
 export default function MyPage() {
   const { data, isLoading } = useProfile();
@@ -67,6 +68,7 @@ export default function MyPage() {
           </div>
         </div>
       </div>
+      <BtnLogout />
       <MyPageMenu />
     </>
   );
