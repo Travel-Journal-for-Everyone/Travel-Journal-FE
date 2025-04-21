@@ -21,7 +21,7 @@ export function useProfile() {
       profileImage: File | null;
     }) => saveProfile(nickname, profileVisibility, profileImage),
     onSuccess: () => {
-      router.push("/profile/welcome");
+      router.push("/");
     },
     onError: (error) => {
       console.error("프로필 저장 실패:", error);
