@@ -39,7 +39,11 @@ export default function ProfileSetup() {
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isNicknameValid || nickname.trim() === "") return;
+
+    if (isNicknameValid !== true || nickname.trim() === "") {
+      alert("닉네임 중복 확인을 먼저 해주세요.");
+      return;
+    }
 
     saveProfileMutation.mutate({
       nickname,
@@ -47,7 +51,6 @@ export default function ProfileSetup() {
       profileImage,
     });
   };
-
   return (
     <div className="flex justify-center items-center w-full">
       <form
