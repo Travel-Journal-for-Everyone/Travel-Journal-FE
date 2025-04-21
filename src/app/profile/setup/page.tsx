@@ -10,7 +10,9 @@ export default function ProfileSetup() {
   const [profileVisibility, setProfileVisibility] = useState("public");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
+  const [lastCheckedNickname, setLastCheckedNickname] = useState<string | null>(
+    null
+  );
   const { checkNicknameMutation, saveProfileMutation } = useProfile();
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +23,10 @@ export default function ProfileSetup() {
     if (!nickname.trim()) return;
     try {
       const { status } = await checkNicknameMutation.mutateAsync(nickname);
-      setIsNicknameValid(status === "valid");
+      if (status === "valid") {
+        setIsNicknameValid(true);
+        setLastCheckedNickname(nickname);
+      }
     } catch (error) {
       console.error("❌ 닉네임 중복 확인 오류:", error);
       setIsNicknameValid(false);
@@ -39,7 +44,11 @@ export default function ProfileSetup() {
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isNicknameValid !== true || nickname.trim() === "") {
+    if (
+      isNicknameValid !== true ||
+      nickname.trim() === "" ||
+      lastCheckedNickname !== nickname
+    ) {
       alert("닉네임 중복 확인을 먼저 해주세요.");
       return;
     }
@@ -139,7 +148,11 @@ export default function ProfileSetup() {
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500"
           }`}
-          disabled={saveProfileMutation.isPending}
+          disabled={
+            saveProfileMutation.isPending ||
+            isNicknameValid !== true ||
+            lastCheckedNickname !== nickname
+          }
         >
           {saveProfileMutation.isPending ? "저장 중..." : "작성 완료"}
         </button>
