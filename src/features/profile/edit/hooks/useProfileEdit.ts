@@ -5,11 +5,11 @@ import { updateProfile } from "@/services/updateProfile";
 
 export function useProfileEdit() {
   const [isNicknameValid, setIsNicknameValid] = useState<boolean | null>(null);
-
   const checkNicknameMutation = useMutation({
     mutationFn: async (nickname: string) => {
       const result = await checkNickname(nickname);
-      setIsNicknameValid(result.success);
+      const isValid = result.status === "valid";
+      setIsNicknameValid(isValid);
       return result;
     },
     onError: () => setIsNicknameValid(false),
