@@ -17,12 +17,11 @@ export default function ProfileSetup() {
     setNickname(e.target.value);
     setIsNicknameValid(null);
   };
-
   const checkNicknameAvailability = async () => {
     if (!nickname.trim()) return;
     try {
-      const data = await checkNicknameMutation.mutateAsync(nickname);
-      setIsNicknameValid(data.success);
+      const { status } = await checkNicknameMutation.mutateAsync(nickname);
+      setIsNicknameValid(status === "valid");
     } catch (error) {
       console.error("❌ 닉네임 중복 확인 오류:", error);
       setIsNicknameValid(false);
@@ -104,13 +103,18 @@ export default function ProfileSetup() {
             </button>
           </div>
           {isNicknameValid === false && (
-            <p className="text-red-500 text-sm mt-1">
-              이미 사용 중인 아이디입니다.
+            <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+              ❌ 이미 사용 중인 닉네임입니다.
             </p>
           )}
           {isNicknameValid === true && (
-            <p className="text-green-500 text-sm mt-1">
-              사용 가능한 닉네임입니다.
+            <p className="text-green-500 text-sm mt-1 flex items-center gap-1">
+              ✅ 사용 가능한 닉네임입니다.
+            </p>
+          )}
+          {isNicknameValid === null && nickname.trim() !== "" && (
+            <p className="text-gray-400 text-sm mt-1 flex items-center gap-1">
+              ℹ️ 닉네임 중복 확인을 진행해주세요.
             </p>
           )}
         </div>

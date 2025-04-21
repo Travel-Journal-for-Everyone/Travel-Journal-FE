@@ -1,8 +1,10 @@
 import axiosInstance from "@/lib/axiosInstance";
 
-export async function checkNickname(nickname: string) {
+export async function checkNickname(
+  nickname: string
+): Promise<{ status: "duplicate" | "valid" }> {
   const res = await axiosInstance.get(
-    `/v1/member/check-nickname/${encodeURIComponent(nickname)}`
+    `/v1/members/check-nickname?nickname=${nickname}`
   );
   return res.data;
 }
