@@ -14,7 +14,9 @@ export default function ProfileEdit() {
   const [profileVisibility, setProfileVisibility] = useState("public");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
+  const [lastCheckedNickname, setLastCheckedNickname] = useState<string | null>(
+    null
+  );
   const {
     checkNicknameMutation,
     updateProfileMutation,
@@ -38,8 +40,12 @@ export default function ProfileEdit() {
   const checkNicknameAvailability = async () => {
     if (!nickname.trim()) return;
     try {
-      const data = await checkNicknameMutation.mutateAsync(nickname);
-      setIsNicknameValid(data.success);
+      const { status } = await checkNicknameMutation.mutateAsync(nickname);
+      const isValid = status === "valid";
+      setIsNicknameValid(isValid);
+      if (isValid) {
+        setLastCheckedNickname(nickname);
+      }
     } catch (error) {
       console.error("❌ 닉네임 중복 확인 오류:", error);
       setIsNicknameValid(false);
@@ -64,9 +70,18 @@ export default function ProfileEdit() {
 
     const nicknameChanged =
       nickname.trim() && nickname !== profileInfo.nickname;
+
     const visibilityChanged =
       profileVisibility.toUpperCase() !== profileInfo.accountScope;
+
     const imageChanged = !!profileImage;
+    if (
+      nicknameChanged &&
+      (isNicknameValid !== true || nickname !== lastCheckedNickname)
+    ) {
+      alert("닉네임 중복 확인을 먼저 해주세요.");
+      return;
+    }
 
     if (!nicknameChanged && !visibilityChanged && !imageChanged) {
       alert("변경된 내용이 없습니다.");
@@ -161,13 +176,18 @@ export default function ProfileEdit() {
             </button>
           </div>
           {isNicknameValid === false && (
-            <p className="text-red-500 text-sm mt-1">
-              이미 사용 중인 아이디입니다.
+            <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+              ❌ 이미 사용 중인 닉네임입니다.
             </p>
           )}
           {isNicknameValid === true && (
-            <p className="text-green-500 text-sm mt-1">
-              사용 가능한 닉네임입니다.
+            <p className="text-green-500 text-sm mt-1 flex items-center gap-1">
+              ✅ 사용 가능한 닉네임입니다.
+            </p>
+          )}
+          {isNicknameValid === null && nickname.trim() !== "" && (
+            <p className="text-gray-400 text-sm mt-1 flex items-center gap-1">
+              ℹ️ 닉네임 중복 확인을 진행해주세요.
             </p>
           )}
         </div>
