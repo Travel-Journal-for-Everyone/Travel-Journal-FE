@@ -6,9 +6,9 @@ interface SearchTabsProps {
 }
 
 const tabs: { key: TabValue; label: string }[] = [
-  { key: "member", label: "여행자" },
   { key: "diary", label: "여행 일지" },
   { key: "place", label: "플레이스" },
+  { key: "member", label: "여행자" },
 ];
 
 export default function SearchTabs({

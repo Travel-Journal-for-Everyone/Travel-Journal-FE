@@ -5,11 +5,11 @@ import SearchTabs from "@/features/search/components/searchTabs";
 import SearchInput from "@/features/search/components/searchInput";
 import MemberSearchResult from "@/features/search/components/MemberSearchResult";
 
-type TabValue = "member" | "diary" | "place";
+type TabValue = "diary" | "place" | "member";
 
 export default function SearchPage() {
   const [keyword, setKeyword] = useState("");
-  const [tab, setTab] = useState<"member" | "diary" | "place">("member");
+  const [tab, setTab] = useState<"diary" | "place" | "member">("diary");
 
   return (
     <div className="max-w-screen-lg mx-auto px-4 pt-8">
@@ -21,8 +21,8 @@ export default function SearchPage() {
       />
       <div className="mt-4">
         {tab === "member" && <MemberSearchResult keyword={keyword} />}
-        {tab === "diary" && <MemberSearchResult keyword={keyword} />}
-        {tab === "place" && <MemberSearchResult keyword={keyword} />}
+        {tab === "place" && <span />}
+        {tab === "diary" && <span />}
       </div>
     </div>
   );
