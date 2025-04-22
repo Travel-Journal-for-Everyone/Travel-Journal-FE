@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
@@ -12,7 +11,6 @@ import ProfileCard from "@/features/common/ProfileCard";
 export default function Home() {
   const { data } = useMemberInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const member = data?.profileInfo ?? [];
   const regions = data?.regions ?? [];
 
   return (
@@ -35,15 +33,19 @@ export default function Home() {
           </div>
         </div>
         <div className="block md:hidden">
-          <ProfileCard
-            nickname={member.nickname}
-            profileImageUrl={member.profileImageUrl}
-            accountScope={member.accountScope}
-            followerCount={member.followerCount}
-            followingCount={member.followingCount}
-            travelDiaryCount={member.travelDiaryCount}
-            placesCount={member.placesCount}
-          />
+          {!data ? (
+            <div></div>
+          ) : (
+            <ProfileCard
+              nickname={data.nickname}
+              profileImageUrl={data.profileImageUrl}
+              accountScope={data.accountScope}
+              followerCount={data.followerCount}
+              followingCount={data.followingCount}
+              travelDiaryCount={data.travelDiaryCount}
+              placesCount={data.placesCount}
+            />
+          )}
         </div>
         <section>
           <div className="flex justify-center items-center">
