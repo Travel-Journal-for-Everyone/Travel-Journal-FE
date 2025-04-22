@@ -3,7 +3,7 @@
 import RegionSVG from "@/assets/map/map.svg";
 
 interface RegionMapComponentProps {
-  onSelectRegion: (region: string) => void;
+  onSelectRegion?: (region: string) => void;
 }
 const decodeUnicodeId = (region: string | undefined) => {
   if (!region) return "";
@@ -22,7 +22,7 @@ export default function RegionMap({ onSelectRegion }: RegionMapComponentProps) {
           const target = e.target as SVGElement;
           const region = decodeUnicodeId(target.dataset.region);
 
-          if (region) {
+          if (region && onSelectRegion) {
             onSelectRegion(region);
           }
         }}
