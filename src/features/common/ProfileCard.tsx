@@ -11,6 +11,7 @@ interface ProfileCardProps {
   followingCount: number;
   travelDiaryCount: number;
   placesCount: number;
+  mobile: boolean;
 }
 
 export default function ProfileCard({
@@ -21,6 +22,7 @@ export default function ProfileCard({
   followingCount,
   travelDiaryCount,
   placesCount,
+  mobile,
 }: ProfileCardProps) {
   const scopeIcon =
     accountScope === "PUBLIC" ? (
@@ -31,14 +33,18 @@ export default function ProfileCard({
       <Lock className="w-4 h-4" />
     );
 
+  const containerClass = mobile ? "md:hidden " : "visible";
+
   return (
-    <div className="md:hidden flex items-center gap-4 mx-2">
+    <div
+      className={`${containerClass} max-w-[400px] flex items-center gap-4 mx-auto`}
+    >
       <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
         <Image
           src={profileImageUrl || "/default-avatar.png"}
           alt="프로필 이미지"
           fill
-          className="rounded-full object-contain "
+          className="rounded-full object-cover"
         />
       </div>
       <div className="flex-1">

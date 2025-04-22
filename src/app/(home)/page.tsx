@@ -38,6 +38,7 @@ export default function Home() {
             <div></div>
           ) : (
             <ProfileCard
+              mobile={true}
               nickname={data.profileInfo.nickname}
               profileImageUrl={data.profileInfo.profileImageUrl}
               accountScope={data.profileInfo.accountScope}

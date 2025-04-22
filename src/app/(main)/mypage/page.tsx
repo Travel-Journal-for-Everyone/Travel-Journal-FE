@@ -20,6 +20,7 @@ export default function MyPage() {
         <div></div>
       ) : (
         <ProfileCard
+          mobile={true}
           nickname={data.nickname}
           profileImageUrl={data.profileImageUrl}
           accountScope={data.accountScope}
