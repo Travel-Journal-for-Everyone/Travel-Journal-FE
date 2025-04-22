@@ -1,9 +1,7 @@
 import MemberClientPage from "@/features/member/MemberClientPage";
+type PageParams = Promise<{ id: number }>;
 
-interface Props {
-  params: { id: string };
-}
-
-export default function MemberPage({ params }: Props) {
-  return <MemberClientPage memberId={Number(params.id)} />;
+export default async function Page({ params }: { params: PageParams }) {
+  const { id } = await params;
+  return <MemberClientPage memberId={id} />;
 }
