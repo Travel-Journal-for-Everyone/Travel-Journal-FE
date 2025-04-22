@@ -4,7 +4,7 @@ export async function checkNickname(
   nickname: string
 ): Promise<{ status: "duplicate" | "valid" | "containsBadWord" }> {
   try {
-    await axiosInstance.get(`/v1/member/check-nickname?nickname=${nickname}`);
+    await axiosInstance.get(`/v1/member/check-nickname/${nickname}`);
     return { status: "valid" };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
