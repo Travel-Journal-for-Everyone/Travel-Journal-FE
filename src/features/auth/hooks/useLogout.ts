@@ -1,6 +1,7 @@
 import { deleteCookie, getCookie } from "@/lib/cookieUtils";
 import { apiEndpoint } from "@/app/shared/config/constants";
 import axiosInstance from "@/lib/axiosInstance";
+import { useAuthStore } from "@/store/useAuthStore"; // ✅ 추가
 
 export async function logout() {
   const deviceId = getCookie("deviceId");
@@ -13,8 +14,17 @@ export async function logout() {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
+  // ✅ 쿠키 삭제
   deleteCookie("accessToken");
   deleteCookie("refreshToken");
   deleteCookie("deviceId");
   deleteCookie("memberId");
+
+  localStorage.removeItem("nickname");
+  localStorage.removeItem("profileImage");
+  localStorage.removeItem("memberId");
+  localStorage.removeItem("accountScope");
+  localStorage.removeItem("isFirstLogin");
+
+  useAuthStore.getState().resetAuth();
 }

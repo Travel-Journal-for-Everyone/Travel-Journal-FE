@@ -55,9 +55,6 @@ axiosInstance.interceptors.response.use(
         // ✅ 쿠키에 갱신된 토큰 저장
         setCookie("accessToken", newAccessToken);
 
-        // ✅ 상태도 갱신 (user는 그대로 유지)
-        useAuthStore.getState().setAccessToken(newAccessToken);
-
         // ✅ Authorization 헤더 갱신 후 원래 요청 재시도
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);

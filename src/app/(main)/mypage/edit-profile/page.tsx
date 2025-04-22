@@ -5,10 +5,11 @@ import { Fragment, useEffect, useState } from "react";
 import { useProfileEdit } from "@/features/profile/edit/hooks/useProfileEdit";
 import { useAuthStore } from "@/store/useAuthStore";
 import { TopBar } from "@/features/common/TopBar";
+import { getCookie } from "@/lib/cookieUtils";
 
 export default function ProfileEdit() {
   const profileInfo = useAuthStore((state) => state.profileInfo);
-  const accessToken = useAuthStore.getState().accessToken;
+  const accessToken = getCookie("accessToken");
 
   const [nickname, setNickname] = useState("");
   const [profileVisibility, setProfileVisibility] = useState("public");
@@ -17,6 +18,7 @@ export default function ProfileEdit() {
   const [lastCheckedNickname, setLastCheckedNickname] = useState<string | null>(
     null
   );
+
   const {
     checkNicknameMutation,
     updateProfileMutation,
@@ -34,7 +36,7 @@ export default function ProfileEdit() {
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-    setIsNicknameValid(null); // 변경 시 중복확인 초기화
+    setIsNicknameValid(null);
   };
 
   const checkNicknameAvailability = async () => {
@@ -47,7 +49,7 @@ export default function ProfileEdit() {
         setLastCheckedNickname(nickname);
       }
     } catch (error) {
-      console.error("❌ 닉네임 중복 확인 오류:", error);
+      console.error("닉네임 중복 확인 오류:", error);
       setIsNicknameValid(false);
     }
   };

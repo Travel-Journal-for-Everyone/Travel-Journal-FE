@@ -16,15 +16,20 @@ export default function MyPage() {
 
   return (
     <>
-      <ProfileCard
-        nickname={data.nickname}
-        profileImageUrl={data.profileImageUrl}
-        accountScope={data.accountScope}
-        followerCount={data.followerCount}
-        followingCount={data.followingCount}
-        travelDiaryCount={data.travelDiaryCount}
-        placesCount={data.placesCount}
-      />
+      {!data ? (
+        <div></div>
+      ) : (
+        <ProfileCard
+          nickname={data.nickname}
+          profileImageUrl={data.profileImageUrl}
+          accountScope={data.accountScope}
+          followerCount={data.followerCount}
+          followingCount={data.followingCount}
+          travelDiaryCount={data.travelDiaryCount}
+          placesCount={data.placesCount}
+        />
+      )}
+
       <TopBar title="마이페이지" backTo="/" />
       <div className="hidden md:flex mx-auto px-4 py-8">
         <div className="flex items-center gap-4">
@@ -68,8 +73,10 @@ export default function MyPage() {
           </div>
         </div>
       </div>
-      <BtnLogout />
       <MyPageMenu />
+      <div className="px-4 py-4 text-sm font-medium text-red-800 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-md">
+        <BtnLogout />
+      </div>
     </>
   );
 }
