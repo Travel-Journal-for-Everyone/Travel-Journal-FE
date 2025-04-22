@@ -4,8 +4,7 @@ export function BtnLogout() {
   const handleLogOut = async () => {
     try {
       await logout();
-      // ✅ 필요하면 로그아웃 후 이동 처리
-      // router.push("/login");
+      window.location.href = "/login";
     } catch (err) {
       console.error("로그아웃 실패:", err);
     }

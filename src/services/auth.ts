@@ -34,11 +34,8 @@ export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
   setCookie("deviceId", deviceId);
   setCookie("memberId", memberId.toString());
 
-  useAuthStore.getState().setAccessToken(accessToken);
   useAuthStore.getState().setUser({
     memberId,
-    refreshToken,
-    deviceId,
   });
 
   return data;
@@ -67,21 +64,13 @@ export async function googleLoginRequest(
   if (!accessToken) {
     throw new Error("Access Token이 응답 헤더에 없습니다.");
   }
-
-  console.log("✅ AccessToken 추출 완료:", accessToken);
-
-  // ✅ 쿠키 저장
   setCookie("accessToken", accessToken);
   setCookie("refreshToken", data.refreshToken);
   setCookie("deviceId", data.deviceId);
   setCookie("memberId", data.memberId.toString());
 
-  // ✅ Zustand 상태 (뷰 렌더링용) 저장
-  useAuthStore.getState().setAccessToken(accessToken);
   useAuthStore.getState().setUser({
     memberId: data.memberId,
-    refreshToken: data.refreshToken,
-    deviceId: data.deviceId,
   });
 
   return data;
