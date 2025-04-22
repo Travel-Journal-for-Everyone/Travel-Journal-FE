@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
 import Button from "./CommonBtn";
 import Image from "next/image";
+import { Search } from "lucide-react";
 
 const Header = () => {
   const { data: member, isLoading } = useMemberInfo();
@@ -26,20 +27,21 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* 조건부 렌더링 */}
           {isLoading ? null : member ? (
-            <Link href="/mypage" className="flex items-center gap-2">
-              <Image
-                src={member.profileInfo.profileImageUrl}
-                alt="프로필"
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-full object-cover"
-              />
-              <span className="text-sm text-gray-700">
-                {member.profileInfo.nickname}
-              </span>
-            </Link>
+            <>
+              <Link href="/mypage" className="flex items-center gap-2">
+                <Image
+                  src={member.profileInfo.profileImageUrl}
+                  alt="프로필"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              </Link>
+              <Link href="/search">
+                <Search />
+              </Link>
+            </>
           ) : (
             <Link
               href="/login"
