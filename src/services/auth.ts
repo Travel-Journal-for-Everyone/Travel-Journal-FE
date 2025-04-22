@@ -1,5 +1,4 @@
 import { setCookie } from "@/lib/cookieUtils";
-import { useAuthStore } from "@/store/useAuthStore";
 interface LoginResponse {
   memberId: number;
   isFirstLogin: boolean;
@@ -34,10 +33,6 @@ export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
   setCookie("deviceId", deviceId);
   setCookie("memberId", memberId.toString());
 
-  useAuthStore.getState().setUser({
-    memberId,
-  });
-
   return data;
 }
 
@@ -68,10 +63,6 @@ export async function googleLoginRequest(
   setCookie("refreshToken", data.refreshToken);
   setCookie("deviceId", data.deviceId);
   setCookie("memberId", data.memberId.toString());
-
-  useAuthStore.getState().setUser({
-    memberId: data.memberId,
-  });
 
   return data;
 }

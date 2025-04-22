@@ -5,8 +5,13 @@ export interface User {
   memberId: number;
   email?: string;
   name?: string;
-  nickname?: string;
-  profileImageUrl?: string;
+  nickname: string;
+  profileImageUrl: string;
+  accountScope: "PUBLIC" | "FRIENDS" | "PRIVATE";
+  followerCount: number;
+  followingCount: number;
+  travelDiaryCount: number;
+  placesCount: number;
 }
 
 export interface ProfileInfo {
@@ -21,6 +26,16 @@ interface AuthState {
   setUser: (user: User) => void;
   setProfileInfo: (info: ProfileInfo) => void;
   resetAuth: () => void;
+}
+
+export interface ProfileCard {
+  nickname: string;
+  profileImageUrl: string;
+  accountScope: "PUBLIC" | "FRIENDS" | "PRIVATE";
+  followerCount: number;
+  followingCount: number;
+  travelDiaryCount: number;
+  placesCount: number;
 }
 
 export const useAuthStore = create<AuthState>()(

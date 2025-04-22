@@ -1,5 +1,19 @@
+// hooks/useMemberSearch.ts
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
+
+import { useEffect, useState } from "react";
+
+export function useDebounce<T>(value: T, delay = 300): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 interface MemberSearchParams {
   keyword: string;
@@ -7,12 +21,16 @@ interface MemberSearchParams {
   size?: number;
 }
 
+interface MemberItem {
+  memberId: number;
+  nickname: string;
+  profileImageUrl: string;
+  travelDiaryCount: number;
+  placesCount: number;
+}
+
 interface MemberSearchResult {
-  content: Array<{
-    memberId: number;
-    nickname: string;
-    profileImageUrl: string;
-  }>;
+  content: MemberItem[];
   totalPages: number;
   totalElements: number;
   number: number;
@@ -24,14 +42,16 @@ export const useMemberSearch = ({
   page = 0,
   size = 10,
 }: MemberSearchParams) => {
+  const debouncedKeyword = useDebounce(keyword);
+
   return useQuery({
-    queryKey: ["searchMembers", keyword, page, size],
+    queryKey: ["searchMembers", debouncedKeyword, page, size],
     queryFn: async () => {
       const res = await axiosInstance.get<MemberSearchResult>(
         "/v1/search/members",
         {
           params: {
-            keyword,
+            keyword: debouncedKeyword,
             page,
             size,
           },
@@ -39,7 +59,7 @@ export const useMemberSearch = ({
       );
       return res.data;
     },
-    enabled: !!keyword, // 키워드가 있어야만 요청
+    enabled: !!debouncedKeyword, // 키워드 있을 때만 요청
     staleTime: 1000 * 30, // 30초 캐시
   });
 };

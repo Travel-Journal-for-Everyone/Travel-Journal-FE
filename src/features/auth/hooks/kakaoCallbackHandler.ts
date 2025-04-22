@@ -13,7 +13,7 @@ export default function KakaoCallbackHandler() {
     const code = searchParams.get("code");
 
     if (code) {
-      login({ code }); // ✅ 이제 idToken 필요 없음
+      login({ code });
     } else {
       console.error("❌ 인가 코드 없음");
       router.push("/login");

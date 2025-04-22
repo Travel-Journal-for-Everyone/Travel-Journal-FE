@@ -12,6 +12,7 @@ export default function Home() {
   const { data } = useMemberInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
+  console.log(data);
 
   return (
     <>
@@ -37,13 +38,13 @@ export default function Home() {
             <div></div>
           ) : (
             <ProfileCard
-              nickname={data.nickname}
-              profileImageUrl={data.profileImageUrl}
-              accountScope={data.accountScope}
-              followerCount={data.followerCount}
-              followingCount={data.followingCount}
-              travelDiaryCount={data.travelDiaryCount}
-              placesCount={data.placesCount}
+              nickname={data.profileInfo.nickname}
+              profileImageUrl={data.profileInfo.profileImageUrl}
+              accountScope={data.profileInfo.accountScope}
+              followerCount={data.profileInfo.followerCount}
+              followingCount={data.profileInfo.followingCount}
+              travelDiaryCount={data.profileInfo.travelDiaryCount}
+              placesCount={data.profileInfo.placesCount}
             />
           )}
         </div>
