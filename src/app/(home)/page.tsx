@@ -13,7 +13,10 @@ export default function Home() {
   const { data } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
-  console.log(data);
+
+  if (!data) {
+    window.location.href = "/login";
+  }
 
   return (
     <>
