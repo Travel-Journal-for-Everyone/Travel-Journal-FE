@@ -3,7 +3,7 @@
 import { useMyInfo } from "@/features/member/hooks/useMemberInfo";
 import { Search } from "lucide-react";
 import { regionMapData } from "@/features/map/constants/RegionMapData";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import RegionDetailPanel from "@/features/map/components/RegionData";
 import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
@@ -13,7 +13,12 @@ export default function Home() {
   const { data } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
-  console.log(data);
+
+  useEffect(() => {
+    if (!data) {
+      window.location.href = "/login";
+    }
+  }, [data]);
 
   return (
     <>

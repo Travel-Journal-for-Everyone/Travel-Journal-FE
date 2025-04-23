@@ -17,7 +17,7 @@ export interface User {
 export interface ProfileInfo {
   nickname: string;
   accountScope: "PUBLIC" | "FRIENDS" | "PRIVATE";
-  profileImageUrl: string | null;
+  profileImageUrl: string;
 }
 
 interface AuthState {
