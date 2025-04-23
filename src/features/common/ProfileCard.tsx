@@ -4,9 +4,9 @@ import Image from "next/image";
 import { Globe, Lock, User } from "lucide-react";
 
 interface ProfileCardProps {
-  nickname: string;
+  nickname?: string;
   profileImageUrl: string;
-  accountScope: "PUBLIC" | "FRIENDS" | "PRIVATE";
+  accountScope?: "PUBLIC" | "FRIENDS" | "PRIVATE";
   followerCount: number;
   followingCount: number;
   travelDiaryCount: number;
@@ -37,7 +37,7 @@ export default function ProfileCard({
 
   return (
     <div
-      className={`${containerClass} max-w-[400px] flex items-center gap-4 mx-auto`}
+      className={`${containerClass} max-w-full flex items-center gap-10 mx-auto my-4`}
     >
       <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
         <Image
@@ -50,9 +50,9 @@ export default function ProfileCard({
       <div className="flex-1">
         <div className="flex items-center gap-1 mb-2">
           <h2 className="text-base font-semibold">{nickname}</h2>
-          {scopeIcon}
+          {!accountScope ? <span></span> : <span> {scopeIcon}</span>}
         </div>
-        <dl className="flex justify-between text-center text-sm">
+        <dl className="flex justify-between text-center md:text-base text-sm">
           <div>
             <dt className="text-gray-500">팔로워</dt>
             <dd className="font-bold">{followerCount}</dd>

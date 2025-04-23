@@ -1,10 +1,13 @@
 import { setCookie } from "@/lib/cookieUtils";
+
 interface LoginResponse {
   memberId: number;
   isFirstLogin: boolean;
   refreshToken: string;
   deviceId: string;
 }
+
+import { useAuthStore } from "@/store/useAuthStore"; // 👈 추가
 
 export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
   const res = await fetch(
@@ -33,6 +36,8 @@ export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
   setCookie("deviceId", deviceId);
   setCookie("memberId", memberId.toString());
 
+  useAuthStore.getState().setMemberIdOnly(memberId);
+
   return data;
 }
 
@@ -59,10 +64,13 @@ export async function googleLoginRequest(
   if (!accessToken) {
     throw new Error("Access Token이 응답 헤더에 없습니다.");
   }
+
   setCookie("accessToken", accessToken);
   setCookie("refreshToken", data.refreshToken);
   setCookie("deviceId", data.deviceId);
   setCookie("memberId", data.memberId.toString());
+
+  useAuthStore.getState().setMemberIdOnly(data.memberId);
 
   return data;
 }
