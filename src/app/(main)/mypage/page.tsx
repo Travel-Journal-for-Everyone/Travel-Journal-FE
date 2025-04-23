@@ -9,10 +9,11 @@ import ProfileCard from "@/features/common/ProfileCard";
 import { TopBar } from "@/features/common/TopBar";
 import { BtnLogout } from "@/features/common/btnLogout";
 import Link from "next/link";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function MyPage() {
   const { data, isLoading } = useProfile();
-
+  const userId = useAuthStore.getState().user?.memberId;
   if (isLoading || !data) return <div>로딩 중...</div>;
 
   return (
@@ -54,16 +55,19 @@ export default function MyPage() {
             </div>
           </div>
           <dl className="flex justify-between">
-            <div className="flex items-center gap-2">
-              <Link href={"/follow"}>
+            <Link href={`/follow/${userId}`}>
+              <div className="flex items-center gap-2">
                 <dt className="text-gray-500">팔로워</dt>
                 <dd className="font-semibold">{data.followerCount}</dd>
-              </Link>
-            </div>
-            <div className="flex items-center gap-2">
-              <dt className="text-gray-500">팔로잉</dt>
-              <dd className="font-semibold">{data.followingCount}</dd>
-            </div>
+              </div>
+            </Link>
+            <Link href={`/follow/${userId}`}>
+              <div className="flex items-center gap-2">
+                <dt className="text-gray-500">팔로잉</dt>
+                <dd className="font-semibold">{data.followingCount}</dd>
+              </div>
+            </Link>
+
             <div className="flex items-center gap-2">
               <dt className="text-gray-500">여행일지</dt>
               <dd className="font-semibold">{data.travelDiaryCount}</dd>
