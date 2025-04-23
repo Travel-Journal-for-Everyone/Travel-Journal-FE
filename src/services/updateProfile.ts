@@ -1,13 +1,15 @@
+import axiosInstance from "@/lib/axiosInstance";
 import { apiEndpoint } from "@/app/shared/config/constants";
 
-interface UpdateProfilePayload {
+type UpdateProfileRequest = {
   nickname: string;
   profileVisibility: string;
-  profileImage?: File | null;
+  profileImage: File | null;
   accessToken: string;
-}
+  isResetImage?: boolean;
+};
 
-export async function updateProfile(payload: UpdateProfilePayload) {
+export async function updateProfile(payload: UpdateProfileRequest) {
   const formData = new FormData();
 
   const jsonBody = JSON.stringify({
@@ -15,7 +17,6 @@ export async function updateProfile(payload: UpdateProfilePayload) {
     accountScope: payload.profileVisibility.toUpperCase(),
   });
 
-  // ✅ 서버 요구사항을 만족시키기 위해 항상 포함
   formData.append(
     "profileRequest",
     new Blob([jsonBody], { type: "application/json" })
@@ -25,18 +26,23 @@ export async function updateProfile(payload: UpdateProfilePayload) {
     formData.append("profileImage", payload.profileImage);
   }
 
-  const res = await fetch(`${apiEndpoint}/v1/member/profile/update`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${payload.accessToken}`,
-    },
-    body: formData,
-  });
+  try {
+    const res = await axiosInstance.put(
+      `${apiEndpoint}/v1/member/profile/update`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${payload.accessToken}`, // 인터셉터에서 처리한다면 생략 가능
+        },
+      }
+    );
 
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`프로필 수정 실패: ${error}`);
+    return res.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    const errorMessage =
+      err?.response?.data?.message || err.message || "프로필 수정 실패";
+    throw new Error(`❌ ${errorMessage}`);
   }
-
-  return res;
 }

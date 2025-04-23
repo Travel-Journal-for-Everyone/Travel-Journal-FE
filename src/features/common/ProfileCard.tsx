@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { Globe, Lock, User } from "lucide-react";
+import Link from "next/link";
 
 interface ProfileCardProps {
+  memberId?: number;
   nickname?: string;
   profileImageUrl: string;
   accountScope?: "PUBLIC" | "FRIENDS" | "PRIVATE";
@@ -15,6 +17,7 @@ interface ProfileCardProps {
 }
 
 export default function ProfileCard({
+  memberId,
   nickname,
   profileImageUrl,
   accountScope,
@@ -53,14 +56,18 @@ export default function ProfileCard({
           {!accountScope ? <span></span> : <span> {scopeIcon}</span>}
         </div>
         <dl className="flex justify-between text-center md:text-base text-sm">
-          <div>
-            <dt className="text-gray-500">팔로워</dt>
-            <dd className="font-bold">{followerCount}</dd>
-          </div>
-          <div>
-            <dt className="text-gray-500">팔로잉</dt>
-            <dd className="font-bold">{followingCount}</dd>
-          </div>
+          <Link href={`/follow/${memberId}`}>
+            <div className="flex items-center gap-2">
+              <dt className="text-gray-500">팔로워</dt>
+              <dd className="font-semibold">{followerCount}</dd>
+            </div>
+          </Link>
+          <Link href={`/follow/${memberId}`}>
+            <div className="flex items-center gap-2">
+              <dt className="text-gray-500">팔로잉</dt>
+              <dd className="font-semibold">{followingCount}</dd>
+            </div>
+          </Link>
           <div>
             <dt className="text-gray-500">여행 일지</dt>
             <dd className="font-bold">{travelDiaryCount}</dd>
