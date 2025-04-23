@@ -6,6 +6,9 @@ import { SetStateAction, useState } from "react";
 import RegionDetailPanel from "@/features/map/components/RegionData";
 import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
+import { TopBar } from "../common/TopBar";
+import Image from "next/image";
+import FollowButton from "../follow/components/followButton";
 
 interface Props {
   memberId: number;
@@ -22,12 +25,15 @@ export default function MemberClientPage({ memberId }: Props) {
   const regions = data.regions ?? [];
 
   return (
-    <div className="mt-20">
+    <div className="mt-20 max-w-[600px] mx-auto">
+      <TopBar
+        backTo="/search"
+        title={`${data.profileInfo.nickname}`}
+        rightSlot={<FollowButton memberId={memberId} />}
+      />
       <ProfileCard
         mobile={false}
-        nickname={data.profileInfo.nickname}
         profileImageUrl={data.profileInfo.profileImageUrl}
-        accountScope={data.profileInfo.accountScope}
         followerCount={data.profileInfo.followerCount}
         followingCount={data.profileInfo.followingCount}
         travelDiaryCount={data.profileInfo.travelDiaryCount}
@@ -55,31 +61,48 @@ export default function MemberClientPage({ memberId }: Props) {
                     return (
                       <div
                         key={regionKey}
-                        className="absolute text-center text-sm pointer-events-none"
+                        className="absolute text-center text-xs pointer-events-none"
                         style={{ top: y, left: x }}
                       >
                         <p className="font-semibold">{label}</p>
                         {regionData ? (
-                          <span className="text-xs text-gray-500">
-                            {regionData.travelDiaryCount}일지 /{" "}
-                            {regionData.placesCount}곳
-                          </span>
+                          <>
+                            <div className="flex gap-1 items-center mt-1.5">
+                              <Image
+                                src="/icons/Icon-paper-gray-18px.svg"
+                                alt="Diary"
+                                width={16}
+                                height={16}
+                              />
+                              <span className=" text-gray7">
+                                {regionData.travelDiaryCount}일지
+                              </span>
+                              <Image
+                                src="/icons/Icon-pin-gray-18px.svg"
+                                alt="profile"
+                                width={16}
+                                height={16}
+                              />
+                              <span className=" text-gray7">
+                                {regionData.placesCount}곳
+                              </span>
+                            </div>
+                          </>
                         ) : (
-                          <span className="text-xs text-gray-400"></span>
+                          <div className="min-w-full"></div>
                         )}
                       </div>
                     );
                   }
                 )}
+                <RegionDetailPanel
+                  isOpen={!!selectedRegion}
+                  onClose={() => setSelectedRegion(null)}
+                  regionName={selectedRegion || ""}
+                />
               </div>
             </div>
           </section>
-
-          <RegionDetailPanel
-            isOpen={!!selectedRegion}
-            onClose={() => setSelectedRegion(null)}
-            regionName={selectedRegion || ""}
-          />
         </>
       ) : (
         <div className="text-center text-sm text-gray-500 w-full">

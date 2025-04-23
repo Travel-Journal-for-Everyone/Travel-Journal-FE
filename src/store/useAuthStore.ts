@@ -23,19 +23,17 @@ export interface ProfileInfo {
 interface AuthState {
   user: User | null;
   profileInfo: ProfileInfo | null;
-  setUser: (user: User) => void;
-  setProfileInfo: (info: ProfileInfo) => void;
-  resetAuth: () => void;
-}
 
-export interface ProfileCard {
-  nickname: string;
-  profileImageUrl: string;
-  accountScope: "PUBLIC" | "FRIENDS" | "PRIVATE";
-  followerCount: number;
-  followingCount: number;
-  travelDiaryCount: number;
-  placesCount: number;
+  // 전체 유저 정보 저장
+  setUser: (user: User) => void;
+
+  // 로그인 직후 memberId만 임시 저장
+  setMemberIdOnly: (memberId: number) => void;
+
+  // 프로필만 별도 저장
+  setProfileInfo: (info: ProfileInfo) => void;
+
+  resetAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -43,7 +41,24 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       profileInfo: null,
+
       setUser: (user) => set({ user }),
+
+      // ✅ 로그인 직후 호출하는 함수: memberId만 저장
+      setMemberIdOnly: (memberId) =>
+        set({
+          user: {
+            memberId,
+            nickname: "",
+            profileImageUrl: "",
+            accountScope: "PUBLIC",
+            followerCount: 0,
+            followingCount: 0,
+            travelDiaryCount: 0,
+            placesCount: 0,
+          },
+        }),
+
       setProfileInfo: (info) => set({ profileInfo: info }),
       resetAuth: () => set({ user: null, profileInfo: null }),
     }),

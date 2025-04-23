@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
+import { useMyInfo } from "@/features/member/hooks/useMemberInfo";
 import Button from "./CommonBtn";
 import Image from "next/image";
 import { Search } from "lucide-react";
 
 const Header = () => {
-  const { data: member, isLoading } = useMemberInfo();
+  const { data: member, isLoading } = useMyInfo();
 
   return (
     <header className="hidden md:block w-full bg-white shadow-gray-50 shadow-sm fixed top-0 left-0 z-50 py-4">
