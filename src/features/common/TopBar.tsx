@@ -2,12 +2,13 @@
 
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ReactNode } from "react";
 
 interface TopBarProps {
   title: string;
   backTo?: string;
   center?: boolean;
-  rightSlot?: boolean;
+  rightSlot?: ReactNode;
 }
 
 export function TopBar({ center, title, backTo, rightSlot }: TopBarProps) {
