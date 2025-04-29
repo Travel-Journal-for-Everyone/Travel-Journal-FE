@@ -8,6 +8,7 @@ import RegionDetailPanel from "@/features/map/components/RegionData";
 import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
 import Image from "next/image";
+import RegionBottomSheet from "@/features/map/components/RegionDataMobile";
 
 export default function Home() {
   const { data } = useMyInfo();
@@ -124,11 +125,21 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <RegionDetailPanel
-          isOpen={!!selectedRegion}
-          onClose={() => setSelectedRegion(null)}
-          regionName={selectedRegion || ""}
-        />
+        <div className="block md:hidden">
+          <RegionBottomSheet
+            isOpen={!!selectedRegion}
+            onClose={() => setSelectedRegion(null)}
+            regionName={selectedRegion || ""}
+          />
+        </div>
+
+        <div className="hidden md:block">
+          <RegionDetailPanel
+            isOpen={!!selectedRegion}
+            onClose={() => setSelectedRegion(null)}
+            regionName={selectedRegion || ""}
+          />
+        </div>
       </div>
     </>
   );

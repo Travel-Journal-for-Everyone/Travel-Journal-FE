@@ -12,8 +12,8 @@ export default function SearchPage() {
   const [tab, setTab] = useState<"diary" | "place" | "member">("diary");
 
   return (
-    <div className="max-w-screen-lg mx-auto px-4 pt-8">
-      <h1 className="text-xl font-semibold mb-6">검색</h1>
+    <div className="max-w-screen-lg mx-auto md:pt-8">
+      <h1 className="hidden md:block text-xl font-semibold mb-6">검색</h1>
       <SearchInput value={keyword} onChange={setKeyword} />
       <SearchTabs
         currentTab={tab}
