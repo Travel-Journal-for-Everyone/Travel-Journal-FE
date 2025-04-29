@@ -8,9 +8,10 @@ import {
 } from "../hooks/useIsFollowing";
 import { useAuthStore } from "@/store/useAuthStore";
 import FollowList from "../components/followList";
+import { FollowTab } from "../components/followTab";
 
 interface Props {
-  memberId?: number; // 없으면 내 정보
+  memberId?: number;
 }
 
 export default function FollowPageView({ memberId }: Props) {
@@ -21,19 +22,18 @@ export default function FollowPageView({ memberId }: Props) {
   const { data: count } = useFollowCount(targetId!);
   const { data: followers } = useFollowers(targetId!);
   const { data: followings } = useFollowings(targetId!);
-
   const [tab, setTab] = useState<"followers" | "followings">("followers");
 
   return (
     <div className="max-w-xl mx-auto mt-10 px-4">
-      <div className="flex justify-around border-b pb-2">
-        <button onClick={() => setTab("followers")}>
-          팔로워 {count?.followerCount ?? 0}
-        </button>
-        <button onClick={() => setTab("followings")}>
-          팔로잉 {count?.followings ?? 0}
-        </button>
-      </div>
+      <FollowTab
+        count={{
+          followerCount: count?.followerCount ?? 0,
+          followings: count?.followings ?? 0,
+        }}
+        tab={tab}
+        onTabChange={setTab}
+      />
 
       {tab === "followers" ? (
         <FollowList

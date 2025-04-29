@@ -8,18 +8,18 @@ interface TopBarProps {
   title: string;
   backTo?: string;
   center?: boolean;
-  rightSlot?: ReactNode; // ✅ 팔로우 버튼 등 추가할 수 있게!
+  rightSlot?: ReactNode;
 }
 
-export function TopBar({
-  center,
-  title,
-  backTo = "/",
-  rightSlot,
-}: TopBarProps) {
+export function TopBar({ center, title, backTo, rightSlot }: TopBarProps) {
   const router = useRouter();
+
   const handleBack = () => {
-    router.push(backTo);
+    if (backTo) {
+      router.push(backTo);
+    } else {
+      router.back();
+    }
   };
 
   return (
