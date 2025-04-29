@@ -11,15 +11,15 @@ import Image from "next/image";
 import RegionBottomSheet from "@/features/map/components/RegionDataMobile";
 
 export default function Home() {
-  const { data } = useMyInfo();
+  const { data, isLoading } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
 
   useEffect(() => {
-    if (!data) {
+    if (!isLoading && !data) {
       window.location.href = "/login";
     }
-  }, [data]);
+  }, [isLoading, data]);
 
   return (
     <>

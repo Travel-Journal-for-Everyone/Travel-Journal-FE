@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-/** ✅ 1. 요청 인터셉터 - AccessToken 쿠키에서 자동 삽입 */
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getCookie("accessToken");
@@ -17,13 +16,11 @@ axiosInstance.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 
-    console.log("👉 config.headers 후:", config.headers);
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-/** ✅ 2. 응답 인터셉터 - 401 시 토큰 재발급 */
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -52,7 +49,6 @@ axiosInstance.interceptors.response.use(
 
         if (!newAccessToken) throw new Error("accessToken 누락");
 
-        // ✅ 쿠키에 갱신된 토큰 저장
         setCookie("accessToken", newAccessToken);
 
         // ✅ Authorization 헤더 갱신 후 원래 요청 재시도

@@ -1,13 +1,11 @@
 import { setCookie } from "@/lib/cookieUtils";
-
+import { useAuthStore } from "@/store/useAuthStore";
 interface LoginResponse {
   memberId: number;
   isFirstLogin: boolean;
   refreshToken: string;
   deviceId: string;
 }
-
-import { useAuthStore } from "@/store/useAuthStore"; // 👈 추가
 
 export async function kakaoLoginRequest(code: string): Promise<LoginResponse> {
   const res = await fetch(
