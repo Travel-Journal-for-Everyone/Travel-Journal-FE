@@ -1,40 +1,77 @@
 import Image from "next/image";
+import Link from "next/link";
 
-interface FollowListProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any[];
-  type: "followers" | "followings";
-  isMyPage: boolean;
+interface MemberItem {
+  memberId: number;
+  nickname: string;
+  profileImageUrl: string;
+  travelDiaryCount: number;
+  placesCount: number;
 }
 
-export default function FollowList({ data, type, isMyPage }: FollowListProps) {
+interface FollowListProps {
+  data: MemberItem[];
+  type: "followers" | "followings";
+  isMyPage: boolean;
+  onUnfollowSuccess?: () => void;
+}
+export default function FollowList({
+  data,
+  type,
+  isMyPage,
+  onUnfollowSuccess,
+}: FollowListProps) {
+  const users = data ?? [];
+  console.log("FollowList data", data);
+  console.log("FollowList users", users);
   return (
-    <ul className="space-y-4 mt-4">
-      {data.map((user) => (
-        <li key={user.memberId} className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image
-              src={user.profileImageUrl}
-              className="w-8 h-8 rounded-full"
-              alt="userProfile"
-              width={16}
-              height={16}
-            />
-            <div>
-              <div className="font-medium">{user.nickname}</div>
-              <div className="text-xs text-gray-500">
-                📘 {user.travelDiaryCount}개 · 📍 {user.placesCount}곳
+    <div className="space-y-4 mt-4">
+      {users.length > 0 ? (
+        users.map((user) => (
+          <Link
+            href={`/member/${user.memberId}`}
+            key={user.memberId}
+            className="flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <Image
+                src={user.profileImageUrl}
+                alt="userProfile"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+              <div>
+                <div className="font-medium">{user.nickname}</div>
+                <div className="text-xs text-gray-500">
+                  📘 {user.travelDiaryCount}개 · 📍 {user.placesCount}곳
+                </div>
               </div>
             </div>
-          </div>
-          {isMyPage && <button>✕</button>}
-          {type === "followers" ? (
-            <button>✕</button>
-          ) : (
-            <span className="text-xs text-gray-400">팔로잉 중</span>
-          )}
-        </li>
-      ))}
-    </ul>
+
+            {isMyPage && type === "followings" && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onUnfollowSuccess?.();
+                }}
+                className="text-red-500 text-sm"
+              >
+                언팔로우
+              </button>
+            )}
+
+            {type === "followers" && (
+              <span className="text-xs text-gray-400">팔로워</span>
+            )}
+          </Link>
+        ))
+      ) : (
+        <div className="text-center text-gray-400 mt-10">
+          리스트가 존재하지 않습니다.
+        </div>
+      )}
+    </div>
   );
 }

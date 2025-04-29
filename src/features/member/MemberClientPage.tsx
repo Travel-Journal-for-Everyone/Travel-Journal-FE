@@ -25,9 +25,8 @@ export default function MemberClientPage({ memberId }: Props) {
   const regions = data.regions ?? [];
 
   return (
-    <div className="mt-20 max-w-[600px] mx-auto">
+    <div className="md:mt-20 max-w-[600px] mx-auto">
       <TopBar
-        backTo="/search"
         title={`${data.profileInfo.nickname}`}
         rightSlot={<FollowButton memberId={memberId} />}
       />

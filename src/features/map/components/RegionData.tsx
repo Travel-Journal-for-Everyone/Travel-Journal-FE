@@ -36,7 +36,7 @@ export default function RegionDetailPanel({
           right: isOpen ? 400 : 0,
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-64 right-0 transform bg-white border rounded-sm py-4 z-50"
+        className="fixed top-64 right-0 transform bg-white border rounded-sm py-4 z-50 md:block hidden"
         style={{ zIndex: 60 }}
       >
         {isOpen ? <ChevronRight /> : <ChevronLeft />}
@@ -46,7 +46,7 @@ export default function RegionDetailPanel({
         initial={{ x: "100%" }}
         animate={{ x: isOpen ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-xl z-50 overflow-y-auto"
+        className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-sm z-50 overflow-y-auto md:block hidden"
       >
         <div className="p-6">
           <h2 className="text-lg font-bold text-center">{regionName}</h2>

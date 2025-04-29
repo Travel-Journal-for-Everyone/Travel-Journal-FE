@@ -41,9 +41,11 @@ export function useFollowCount(memberId: number) {
     queryKey: ["followCount", memberId],
     queryFn: async () => {
       const res = await axiosInstance.get(`/v1/follow/${memberId}/count`);
-      return res.data; // { followerCount: number, followingCount: number }
+      return res.data;
     },
     staleTime: 1000 * 30,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 }
 

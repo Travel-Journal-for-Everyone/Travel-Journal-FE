@@ -2,24 +2,23 @@
 
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
 
 interface TopBarProps {
   title: string;
   backTo?: string;
   center?: boolean;
-  rightSlot?: ReactNode; // ✅ 팔로우 버튼 등 추가할 수 있게!
+  rightSlot?: boolean;
 }
 
-export function TopBar({
-  center,
-  title,
-  backTo = "/",
-  rightSlot,
-}: TopBarProps) {
+export function TopBar({ center, title, backTo, rightSlot }: TopBarProps) {
   const router = useRouter();
+
   const handleBack = () => {
-    router.push(backTo);
+    if (backTo) {
+      router.push(backTo);
+    } else {
+      router.back();
+    }
   };
 
   return (

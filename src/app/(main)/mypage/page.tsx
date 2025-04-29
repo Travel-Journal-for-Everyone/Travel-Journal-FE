@@ -18,7 +18,9 @@ export default function MyPage() {
 
   return (
     <>
-      <TopBar title="마이페이지" backTo="/" />{" "}
+      <div className="hidden md:block">
+        <TopBar title="마이페이지" backTo="/" />
+      </div>
       <div className="hidden md:flex mx-auto px-4 py-8 gap-4">
         <div className="flex items-center">
           <Image
@@ -63,7 +65,7 @@ export default function MyPage() {
             </div>
           </dl>
         </div>
-      </div>{" "}
+      </div>
       {!data ? (
         <div></div>
       ) : (
