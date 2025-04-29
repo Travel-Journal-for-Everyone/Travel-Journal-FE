@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
 import { useAuthStore } from "@/store/useAuthStore";
 
-// ✅ 내 정보 조회 훅
 export function useMyInfo() {
   const memberId = useAuthStore((state) => state.user?.memberId);
 
@@ -17,7 +16,6 @@ export function useMyInfo() {
   });
 }
 
-// ✅ 특정 사용자 조회 훅
 export function useMemberInfo(memberId: number) {
   return useQuery({
     queryKey: ["memberInfo", memberId],

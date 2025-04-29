@@ -13,7 +13,6 @@ export default function SocialLogin() {
 
   return (
     <div className="flex flex-col space-y-3">
-      {/* Kakao Login */}
       <button
         onClick={handleKakaoLogin}
         className="flex items-center justify-center bg-yellow-400 p-3 rounded w-full"
@@ -40,9 +39,6 @@ export default function SocialLogin() {
 
             loginWithGoogle(idToken, {
               onSuccess: (data) => {
-                console.log("✅ 로그인 성공:", data);
-
-                // 라우팅 분기 처리
                 if (data.isFirstLogin) {
                   router.push("/profile/setup");
                 } else {
