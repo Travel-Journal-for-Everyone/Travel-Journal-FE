@@ -42,7 +42,7 @@ export default function ProfileCard({
     <div
       className={`${containerClass} max-w-full flex items-center gap-10 mx-auto my-4`}
     >
-      <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
+      <div className="relative w-16 h-16 overflow-hidden">
         <Image
           src={profileImageUrl || "/default-avatar.png"}
           alt="프로필 이미지"
@@ -57,13 +57,13 @@ export default function ProfileCard({
         </div>
         <dl className="flex justify-between text-center md:text-base text-sm">
           <Link href={`/follow/${memberId}`}>
-            <div className="flex items-center gap-2">
+            <div>
               <dt className="text-gray-500">팔로워</dt>
               <dd className="font-semibold">{followerCount}</dd>
             </div>
           </Link>
           <Link href={`/follow/${memberId}`}>
-            <div className="flex items-center gap-2">
+            <div>
               <dt className="text-gray-500">팔로잉</dt>
               <dd className="font-semibold">{followingCount}</dd>
             </div>
