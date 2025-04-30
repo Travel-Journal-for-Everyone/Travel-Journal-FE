@@ -5,8 +5,6 @@ type UpdateProfileRequest = {
   nickname: string;
   profileVisibility: string;
   profileImage: File | null;
-  accessToken: string;
-  isResetImage?: boolean;
 };
 
 export async function updateProfile(payload: UpdateProfileRequest) {
@@ -33,7 +31,6 @@ export async function updateProfile(payload: UpdateProfileRequest) {
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${payload.accessToken}`, // 인터셉터에서 처리한다면 생략 가능
         },
       }
     );
