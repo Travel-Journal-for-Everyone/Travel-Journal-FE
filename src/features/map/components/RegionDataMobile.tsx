@@ -61,14 +61,15 @@ export default function RegionBottomSheet({
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
-            onDragEnd={(e, info) => {
-              if (info.offset.y > 100) {
-                onClose();
+            onTouchStart={(e) => {
+              const target = e.target as HTMLElement;
+              if (target.closest(".scrollable-content")) {
+                e.stopPropagation();
               }
             }}
-            className="fixed bottom-0 left-0 w-full h-[80%] bg-white z-50 rounded-t-2xl shadow-xl overflow-y-auto"
+            className="fixed bottom-0 left-0 w-full h-[80%] bg-white z-50 rounded-t-2xl shadow-xl overflow-y-scroll"
           >
-            <div className="p-6">
+            <div className="p-6 scrollable-content">
               <h2 className="text-lg font-bold text-center">{regionName}</h2>
 
               {/* 탭 */}
