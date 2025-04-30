@@ -2,13 +2,14 @@
 
 import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
 import { regionMapData } from "@/features/map/constants/RegionMapData";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import RegionDetailPanel from "@/features/map/components/RegionData";
 import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
 import { TopBar } from "../common/TopBar";
 import Image from "next/image";
 import FollowButton from "../follow/components/followButton";
+import { useOtherAuthStore } from "@/store/useOhterAuthStore";
 
 interface Props {
   memberId: number;
@@ -17,6 +18,23 @@ interface Props {
 export default function MemberClientPage({ memberId }: Props) {
   const { data, isLoading } = useMemberInfo(memberId);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+
+  const { setOtherUser } = useOtherAuthStore();
+
+  useEffect(() => {
+    if (data?.profileInfo) {
+      setOtherUser({
+        memberId,
+        nickname: data.profileInfo.nickname,
+        profileImageUrl: data.profileInfo.profileImageUrl,
+        accountScope: data.profileInfo.accountScope,
+        followerCount: data.profileInfo.followerCount,
+        followingCount: data.profileInfo.followingCount,
+        travelDiaryCount: data.profileInfo.travelDiaryCount,
+        placesCount: data.profileInfo.placesCount,
+      });
+    }
+  }, [data]);
 
   if (isLoading) return <div>로딩 중...</div>;
   if (!data) return <div>유저 정보를 불러올 수 없습니다.</div>;
@@ -31,6 +49,7 @@ export default function MemberClientPage({ memberId }: Props) {
         rightSlot={<FollowButton memberId={memberId} />}
       />
       <ProfileCard
+        memberId={memberId}
         mobile={false}
         profileImageUrl={data.profileInfo.profileImageUrl}
         followerCount={data.profileInfo.followerCount}

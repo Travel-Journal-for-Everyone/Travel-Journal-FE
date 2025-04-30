@@ -8,7 +8,7 @@ import { TopBar } from "@/features/common/TopBar";
 import { getCookie } from "@/lib/cookieUtils";
 
 export default function ProfileEdit() {
-  const DEFAULT_IMAGE_URL = process.env.NEXT_PUBLIC_DEFAULT_IMAGE_URL!;
+  const DEFAULT_IMAGE_URL = "/Avatars/default.png";
   const profileInfo = useAuthStore((state) => state.profileInfo);
   const accessToken = getCookie("accessToken");
   const [nickname, setNickname] = useState("");
@@ -96,8 +96,6 @@ export default function ProfileEdit() {
         nickname,
         profileVisibility,
         profileImage: imageChanged ? profileImage : null,
-        isResetImage: preview === DEFAULT_IMAGE_URL,
-        accessToken,
       },
       {
         onSuccess: () => {
@@ -156,8 +154,14 @@ export default function ProfileEdit() {
                   </span>
                 </>
               ) : (
-                <span className="text-gray-500 absolute bottom-0 right-0">
-                  📷
+                <span className="max-w-10 rounded-full bg-white p-2 absolute -bottom-2 -right-2">
+                  <Image
+                    src="/icons/Icon-camera-35px.svg"
+                    alt="Profile Preview"
+                    className="w-full h-full object-cover"
+                    width={16}
+                    height={16}
+                  />
                 </span>
               )}
             </div>

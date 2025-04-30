@@ -34,13 +34,14 @@ export default function FollowList({
             className="flex items-center justify-between"
           >
             <div className="flex items-center gap-2">
-              <Image
-                src={user.profileImageUrl}
-                alt="userProfile"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
+              <div className="relative w-14 h-14 ">
+                <Image
+                  src={user.profileImageUrl}
+                  alt="userProfile"
+                  className="rounded-full"
+                  fill
+                />
+              </div>
               <div>
                 <div className="font-medium">{user.nickname}</div>
                 <div className="text-xs text-gray-500">

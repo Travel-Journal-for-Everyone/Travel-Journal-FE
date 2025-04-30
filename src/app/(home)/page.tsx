@@ -9,11 +9,13 @@ import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
 import Image from "next/image";
 import RegionBottomSheet from "@/features/map/components/RegionDataMobile";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Home() {
   const { data, isLoading } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
+  const userId = useAuthStore.getState().user?.memberId;
 
   useEffect(() => {
     if (!isLoading && !data) {
@@ -45,6 +47,7 @@ export default function Home() {
             <div></div>
           ) : (
             <ProfileCard
+              memberId={userId}
               mobile={true}
               nickname={data.profileInfo.nickname}
               profileImageUrl={data.profileInfo.profileImageUrl}

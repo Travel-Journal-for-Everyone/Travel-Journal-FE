@@ -7,8 +7,10 @@ import {
   useFollowCount,
 } from "../hooks/useIsFollowing";
 import { useAuthStore } from "@/store/useAuthStore";
-import FollowList from "../components/followList";
+import FollowList from "@/features/follow/components/followList";
 import { FollowTab } from "../components/followTab";
+import { TopBar } from "@/features/common/TopBar";
+import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
 
 interface Props {
   memberId?: number;
@@ -16,16 +18,24 @@ interface Props {
 
 export default function FollowPageView({ memberId }: Props) {
   const myMemberId = useAuthStore((state) => state.user?.memberId);
+  const myNickname = useAuthStore((state) => state.profileInfo?.nickname);
   const isMyPage = !memberId || memberId === myMemberId;
   const targetId = memberId ?? myMemberId;
 
   const { data: count } = useFollowCount(targetId!);
   const { data: followers } = useFollowers(targetId!);
   const { data: followings } = useFollowings(targetId!);
-  const [tab, setTab] = useState<"followers" | "followings">("followers");
+  const [tab, setTab] = useState<"followers" | "followings">("followings");
+
+  const { data: otherUser } = useMemberInfo(!isMyPage ? targetId! : 0);
+
+  const nickname = isMyPage
+    ? myNickname ?? "내 프로필"
+    : otherUser?.profileInfo.nickname ?? "회원";
 
   return (
-    <div className="max-w-xl mx-auto mt-10 px-4">
+    <div className="max-w-xl mx-auto ">
+      <TopBar title={nickname} center={true} />
       <FollowTab
         count={{
           followerCount: count?.followerCount ?? 0,

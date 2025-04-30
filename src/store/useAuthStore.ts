@@ -20,7 +20,7 @@ export interface ProfileInfo {
   profileImageUrl: string;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   profileInfo: ProfileInfo | null;
 
