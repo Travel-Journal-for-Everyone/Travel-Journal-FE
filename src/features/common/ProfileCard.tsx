@@ -40,7 +40,7 @@ export default function ProfileCard({
 
   return (
     <div
-      className={`${containerClass} max-w-full flex items-center gap-10 mx-auto my-4`}
+      className={`${containerClass} max-w-full flex items-center gap-10 mx-auto md:my-4`}
     >
       <div className="relative w-16 h-16 overflow-hidden">
         <Image

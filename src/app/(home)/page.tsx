@@ -3,7 +3,7 @@
 import { useMyInfo } from "@/features/member/hooks/useMemberInfo";
 import { Search } from "lucide-react";
 import { regionMapData } from "@/features/map/constants/RegionMapData";
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import RegionDetailPanel from "@/features/map/components/RegionData";
 import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
@@ -12,20 +12,14 @@ import RegionBottomSheet from "@/features/map/components/RegionDataMobile";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Home() {
-  const { data, isLoading } = useMyInfo();
+  const { data } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
   const userId = useAuthStore.getState().user?.memberId;
 
-  useEffect(() => {
-    if (!isLoading && !data) {
-      window.location.href = "/login";
-    }
-  }, [isLoading, data]);
-
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-4 md:gap-24  md:max-w-screen-lg justify-center md:justify-normal md:mt-24 mt-4 md:mx-20 mx-2">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-24  md:max-w-screen-lg justify-center md:justify-normal mb-24 md:my-24 md:mx-20">
         <div className="hidden md:flex flex-col items-center gap-4">
           <h2 className="text-lg font-semibold">
             어떤 멋진 여행을 계획 하시나요? <span className="ml-1">😎</span>
@@ -89,25 +83,31 @@ export default function Home() {
                           <p className="font-semibold">{label}</p>
                           {regionData ? (
                             <>
-                              <div className="flex gap-1 items-center mt-1.5">
-                                <Image
-                                  src="/icons/Icon-paper-gray-18px.svg"
-                                  alt="Diary"
-                                  width={16}
-                                  height={16}
-                                />
-                                <span className=" text-gray7">
-                                  {regionData.travelDiaryCount}일지
-                                </span>
-                                <Image
-                                  src="/icons/Icon-pin-gray-18px.svg"
-                                  alt="profile"
-                                  width={16}
-                                  height={16}
-                                />
-                                <span className=" text-gray7">
-                                  {regionData.placesCount}곳
-                                </span>
+                              <div className="flex flex-wrap gap-1 items-center mt-1.5 text-xs md:text-md">
+                                <div className="flex flex-wrap">
+                                  <div className="relative w-4 h-4">
+                                    <Image
+                                      src="/icons/Icon-paper-gray-18px.svg"
+                                      alt="Diary"
+                                      fill
+                                    />
+                                  </div>
+                                  <span className=" text-gray7">
+                                    {regionData.travelDiaryCount}일지
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap">
+                                  <div className="relative w-4 h-4">
+                                    <Image
+                                      src="/icons/Icon-pin-gray-18px.svg"
+                                      alt="profile"
+                                      fill
+                                    />
+                                  </div>
+                                  <span className=" text-gray7">
+                                    {regionData.placesCount}곳
+                                  </span>
+                                </div>
                               </div>
 
                               <RegionDetailPanel

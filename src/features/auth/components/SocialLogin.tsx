@@ -57,7 +57,7 @@ export default function SocialLogin() {
       </div>
 
       {/* Apple Login 버튼 UI용 */}
-      <button className="flex items-center justify-center bg-black text-white p-3 rounded w-full">
+      {/* <button className="flex items-center justify-center bg-black text-white p-3 rounded w-full">
         <Image
           src="/sns/apple.png"
           alt="Apple 로그인"
@@ -66,7 +66,7 @@ export default function SocialLogin() {
           className="mr-2"
         />
         Apple 로그인
-      </button>
+      </button> */}
     </div>
   );
 }
