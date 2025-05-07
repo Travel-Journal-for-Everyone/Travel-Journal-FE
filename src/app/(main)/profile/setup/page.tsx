@@ -68,7 +68,7 @@ export default function ProfileSetup() {
     <div className="flex justify-center items-center w-full">
       <form
         onSubmit={handleProfileSubmit}
-        className="w-full p-8 rounded-lg flex flex-col items-center gap-6"
+        className="w-full rounded-lg flex flex-col items-center gap-6"
       >
         <h2 className="text-2xl font-semibold">프로필 작성</h2>
 

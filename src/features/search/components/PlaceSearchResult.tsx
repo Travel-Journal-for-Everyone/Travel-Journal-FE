@@ -24,15 +24,15 @@ export default function PlaceSearchResult({ keyword }: Props) {
     return <p className="text-sm text-gray-400">일치하는 장소가 없습니다</p>;
 
   return (
-    <ul className="flex gap-2">
+    <ul className="grid grid-cols-2 gap-2 w-full">
       {data.content.map((place: PlaceItem) => (
-        <li key={place.placeId} className="flex flex-col gap-3  flex-1">
+        <li key={place.placeId} className="flex flex-col gap-3">
           <div className="relative w-full aspect-square">
             <Image
               src={place.thumbnailUrl || "/icons/default-place.png"}
               alt="place thumbnail"
               fill
-              className="rounded-md object-cover "
+              className="rounded-md object-cover"
             />
           </div>
           <div>

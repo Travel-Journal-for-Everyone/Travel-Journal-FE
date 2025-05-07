@@ -21,11 +21,11 @@ export default function SearchTabs({
         <button
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
-          className={`px-4 py-2 text-sm font-medium transition-all
+          className={`px-4 py-2 text-sm font-medium flex-1 transition-all border-b-2
             ${
               currentTab === tab.key
-                ? "text-black border-b-2 border-purple-500"
-                : "text-gray-400 hover:text-black"
+                ? "text-black border-purple-500"
+                : "text-gray-400 hover:text-black border-transparent"
             }`}
         >
           {tab.label}
