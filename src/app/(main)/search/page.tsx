@@ -4,6 +4,8 @@ import { useState } from "react";
 import SearchTabs from "@/features/search/components/searchTabs";
 import SearchInput from "@/features/search/components/searchInput";
 import MemberSearchResult from "@/features/search/components/MemberSearchResult";
+import PlaceSearchResult from "@/features/search/components/PlaceSearchResult";
+import JournalSearchResult from "@/features/search/components/JournalSearchResult";
 
 type TabValue = "diary" | "place" | "member";
 
@@ -19,10 +21,10 @@ export default function SearchPage() {
         currentTab={tab}
         onTabChange={(value) => setTab(value as TabValue)}
       />
-      <div className="mt-4">
+      <div className="mt-4 mb-20 md:mb-0">
         {tab === "member" && <MemberSearchResult keyword={keyword} />}
-        {tab === "place" && <span />}
-        {tab === "diary" && <span />}
+        {tab === "place" && <PlaceSearchResult keyword={keyword} />}
+        {tab === "diary" && <JournalSearchResult keyword={keyword} />}
       </div>
     </div>
   );
