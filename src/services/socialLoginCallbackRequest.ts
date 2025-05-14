@@ -30,6 +30,7 @@ export async function socialLoginCallbackRequest({
     method: "GET",
     headers: {
       "X-Platform": "web",
+      "Login-Test": "true",
     },
   });
 
