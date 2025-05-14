@@ -2,25 +2,41 @@ module.exports = {
   // output: 'export',
   images: {
     remotePatterns: [
+      // ✅ Google 로그인 프로필 이미지 (예: 소셜 로그인 시)
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
+      // ✅ S3 저장소 - 사용자 프로필 이미지 및 정적 이미지
       {
         protocol: "https",
         hostname: "travel-journal-s3.s3.amazonaws.com",
         pathname: "/**",
       },
+      // ✅ 네이버 검색 썸네일 이미지 (예: studio나 장소 데이터용)
       {
         protocol: "https",
         hostname: "search.pstatic.net",
-        pathname: "/**", // 모든 경로 허용
+        pathname: "/**",
       },
+      // ✅ 네이버 블로그 이미지 (예: 플레이스 썸네일 대체 용도 등)
       {
         protocol: "https",
         hostname: "blogfiles.naver.net",
-        pathname: "/**", // 필요 시 추가
+        pathname: "/**",
+      },
+      // ✅ Jejusori 뉴스 이미지 (mock 데이터 썸네일로 사용됨)
+      {
+        protocol: "https",
+        hostname: "cdn.jejusori.net",
+        pathname: "/**",
+      },
+      // ✅ 동아사이언스 썸네일 이미지 (mock 데이터 썸네일로 사용됨)
+      {
+        protocol: "https",
+        hostname: "image.dongascience.com",
+        pathname: "/**",
       },
     ],
   },
