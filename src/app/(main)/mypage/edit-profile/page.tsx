@@ -19,6 +19,9 @@ export default function ProfileEdit() {
     null
   );
 
+  const isResetToDefault = preview === DEFAULT_IMAGE_URL;
+  const isUploadingImage = profileImage !== null;
+
   const {
     checkNicknameMutation,
     updateProfileMutation,
@@ -69,7 +72,6 @@ export default function ProfileEdit() {
       alert("로그인이 필요합니다.");
       return;
     }
-
     const nicknameChanged =
       nickname.trim() && nickname !== profileInfo.nickname;
 
@@ -95,24 +97,25 @@ export default function ProfileEdit() {
       {
         nickname,
         profileVisibility,
-        profileImage: imageChanged ? profileImage : null,
+        profileImage: isUploadingImage ? profileImage : null,
+        memberDefaultImage: isResetToDefault,
       },
       {
         onSuccess: () => {
-          const updatedProfileImageUrl = imageChanged
-            ? preview
+          const updatedProfileImageUrl = isResetToDefault
+            ? DEFAULT_IMAGE_URL
             : useAuthStore.getState().profileInfo?.profileImageUrl ?? "";
+
           useAuthStore.getState().setProfileInfo({
             nickname,
             accountScope: profileVisibility.toUpperCase() as
               | "PUBLIC"
               | "FRIENDS"
               | "PRIVATE",
-            profileImageUrl: updatedProfileImageUrl ?? "",
+            profileImageUrl: updatedProfileImageUrl,
           });
 
           alert("✅ 프로필이 저장되었습니다!");
-
           window.location.href = "/mypage";
         },
         onError: (err) => {
@@ -173,7 +176,7 @@ export default function ProfileEdit() {
             />
           </label>
 
-          {preview && preview !== DEFAULT_IMAGE_URL && (
+          {preview && !isResetToDefault && (
             <button
               type="button"
               onClick={() => {
