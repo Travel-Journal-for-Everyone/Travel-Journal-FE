@@ -11,6 +11,7 @@ import FollowList from "@/features/follow/components/followList";
 import { FollowTab } from "../components/followTab";
 import { TopBar } from "@/features/common/TopBar";
 import { useMemberInfo } from "@/features/member/hooks/useMemberInfo";
+import FollowRequestList from "../components/followRequestList";
 
 interface Props {
   memberId?: number;
@@ -28,14 +29,15 @@ export default function FollowPageView({ memberId }: Props) {
   const [tab, setTab] = useState<"followers" | "followings">("followings");
 
   const { data: otherUser } = useMemberInfo(!isMyPage ? targetId! : 0);
-
   const nickname = isMyPage
     ? myNickname ?? "내 프로필"
     : otherUser?.profileInfo.nickname ?? "회원";
 
   return (
-    <div className="max-w-xl mx-auto ">
+    <div className="max-w-xl mx-auto">
       <TopBar title={nickname} center={true} />
+
+      {/* 팔로잉 / 팔로워 탭 */}
       <FollowTab
         count={{
           followerCount: count?.followerCount ?? 0,
@@ -45,6 +47,15 @@ export default function FollowPageView({ memberId }: Props) {
         onTabChange={setTab}
       />
 
+      {/* 항상 보이는 요청 리스트 */}
+      <section className="pt-4">
+        <FollowRequestList />
+      </section>
+
+      {/* 구분선 */}
+      <hr className="my-6 border-gray-300" />
+
+      {/* 팔로워 / 팔로잉 리스트 */}
       {tab === "followers" ? (
         <FollowList
           data={followers ?? []}
