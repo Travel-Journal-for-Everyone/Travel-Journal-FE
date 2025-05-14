@@ -5,6 +5,7 @@ type UpdateProfileRequest = {
   nickname: string;
   profileVisibility: string;
   profileImage: File | null;
+  memberDefaultImage: boolean;
 };
 
 export async function updateProfile(payload: UpdateProfileRequest) {
@@ -13,6 +14,7 @@ export async function updateProfile(payload: UpdateProfileRequest) {
   const jsonBody = JSON.stringify({
     nickname: payload.nickname,
     accountScope: payload.profileVisibility.toUpperCase(),
+    memberDefaultImage: payload.memberDefaultImage,
   });
 
   formData.append(
