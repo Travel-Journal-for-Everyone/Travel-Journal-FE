@@ -5,6 +5,9 @@ import { useInfiniteScroll } from "@/lib/useInfiniteScroll";
 import ExploreCard from "@/features/explore/components/exploreCard";
 import { mockJournalData } from "@/utils/exploremockData";
 
+import { useSeenTracker } from "@/lib/useSeenTraker";
+import { useMarkJournalsSeen } from "@/features/explore/hooks/useMarkJournalsSeen";
+
 interface JournalItem {
   journalId: number;
   title: string;
@@ -34,6 +37,9 @@ export default function ExplorePage() {
     enabled: true,
   });
 
+  const { markAsSeen } = useMarkJournalsSeen();
+  const trackSeen = useSeenTracker(markAsSeen);
+
   const sentinelRef = useInfiniteScroll(() => {
     if (hasNextPage) fetchNextPage();
   });
@@ -54,7 +60,9 @@ export default function ExplorePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-20 md:mb-0">
         {renderJournals.map((j) => (
-          <ExploreCard key={j.journalId} {...j} />
+          <div key={j.journalId} ref={(el) => trackSeen(el, j.journalId)}>
+            <ExploreCard {...j} />
+          </div>
         ))}
       </div>
 
