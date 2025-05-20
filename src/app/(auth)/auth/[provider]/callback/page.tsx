@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import LoginCallbackClient from "@/features/auth/components/LoginCallbackCleint";
+import LoginCallbackClient from "@/features/auth/components/LoginCallbackClient";
 
 export default async function LoginCallbackPage({
   params,
