@@ -1,18 +1,22 @@
 import { useEffect, useRef } from "react";
 
-export function useInfiniteScroll(callback: () => void) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useInfiniteScroll(callback: () => void, deps: any[] = []) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    const el = ref.current;
+    if (!el) return;
 
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) callback();
+      if (entry.isIntersecting) {
+        callback();
+      }
     });
 
-    observer.observe(ref.current);
+    observer.observe(el);
     return () => observer.disconnect();
-  }, [callback]);
+  }, deps);
 
   return ref;
 }

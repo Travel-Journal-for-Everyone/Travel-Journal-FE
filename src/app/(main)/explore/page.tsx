@@ -41,8 +41,9 @@ export default function ExplorePage() {
   const trackSeen = useSeenTracker(markAsSeen);
 
   const sentinelRef = useInfiniteScroll(() => {
-    if (hasNextPage) fetchNextPage();
-  });
+    if (!hasNextPage || isFetchingNextPage) return;
+    fetchNextPage();
+  }, [hasNextPage, isFetchingNextPage]);
 
   const pages = journalData?.pages ?? [];
   const allJournals = pages.flatMap((page) => page.content);

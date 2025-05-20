@@ -31,8 +31,8 @@ export default function ExploreCard({
 }: JournalCardProps) {
   return (
     <div className="rounded-xl overflow-hidden shadow-sm border bg-white">
-      <div className="relative aspect-square">
-        <div className="absolute z-10 flex items-center gap-2 w-full backdrop-blur-sm p-4">
+      <div className="relative aspect-square text-overlay-gradient">
+        <div className="absolute z-10 flex items-center gap-2 w-full  p-4">
           <Image
             src={profileImageUrl}
             alt={nickname}
@@ -54,7 +54,7 @@ export default function ExploreCard({
           {hashTag.slice(0, 3).map((tag, idx) => (
             <span
               key={idx}
-              className="text-xs font-light bg-primary-main text-white px-2 py-1 rounded-full"
+              className="text-xs bg-white text-primary-main px-2 py-1 rounded-full"
             >
               #{tag}
             </span>
