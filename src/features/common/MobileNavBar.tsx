@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookText, Search, MapPin, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const tabs = [
   { href: "/", icon: BookText, label: "나의 일지" },
@@ -13,9 +14,32 @@ const tabs = [
 
 export default function MobileNavBar() {
   const pathname = usePathname();
+  const [hidden, setHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      if (currentY > lastScrollY && currentY > 50) {
+        setHidden(true); // 스크롤 내릴 때 숨김
+      } else {
+        setHidden(false); // 스크롤 올릴 때 나타남
+      }
+
+      setLastScrollY(currentY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t shadow z-50 md:hidden pb-8">
+    <nav
+      className={`fixed bottom-0 left-0 right-0 bg-white border-t shadow z-50 md:hidden pb-6 transition-transform duration-300 ${
+        hidden ? "translate-y-full" : "translate-y-0"
+      }`}
+    >
       <ul className="flex justify-around items-center">
         {tabs.map((tab) => {
           const isActive =
