@@ -51,9 +51,11 @@ const Header = () => {
             </Link>
           )}
 
-          <Button variant="outline" size="sm">
-            글쓰기
-          </Button>
+          <Link href="/journal/write">
+            <Button variant="outline" size="sm">
+              글쓰기
+            </Button>
+          </Link>
         </div>
       </div>
     </header>
