@@ -7,7 +7,7 @@ import { getLocationName } from "@/services/geoLoactionName";
 import ImageUploader from "@/features/jorunal/components/ImageUploader";
 import Script from "next/script";
 import KakaoMapstest from "@/features/test/kakaoMapstest";
-export const API = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&libraries=services,clusterer&autoload=false`;
+import { KAKAO_MAP_API } from "@/app/constants/kakao";
 
 export default function WriteJournalPage() {
   const [imagesWithMeta, setImagesWithMeta] = useState<
@@ -101,7 +101,7 @@ export default function WriteJournalPage() {
           />
 
           <div className="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
-            <Script src={API} strategy="beforeInteractive" />
+            <Script src={KAKAO_MAP_API} strategy="beforeInteractive" />
 
             <KakaoMapstest
               places={imagesWithMeta
