@@ -30,7 +30,7 @@ export async function socialLoginCallbackRequest({
     method: "GET",
     headers: {
       "X-Platform": "web",
-      "Login-Test": "true",
+      // "Login-Test": "false",
       // 배포시에는 제외
     },
   });
