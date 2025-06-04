@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useMyInfo } from "@/features/member/hooks/useMemberInfo";
 import { Search } from "lucide-react";
 import { regionMapData } from "@/features/map/constants/RegionMapData";
@@ -10,20 +10,20 @@ import ProfileCard from "@/features/common/ProfileCard";
 import Image from "next/image";
 import RegionBottomSheet from "@/features/map/components/RegionDataMobile";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter();
+  // const router = useRouter();
   const { data, isLoading } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
   const userId = useAuthStore.getState().user?.memberId;
 
-  useEffect(() => {
-    if (!isLoading && data === undefined) {
-      router.push("/login");
-    }
-  }, [data, isLoading, router]);
+  // useEffect(() => {
+  //   if (!isLoading && data === undefined) {
+  //     router.push("/login");
+  //   }
+  // }, [data, isLoading, router]);
 
   if (isLoading || data === undefined) {
     return null;
