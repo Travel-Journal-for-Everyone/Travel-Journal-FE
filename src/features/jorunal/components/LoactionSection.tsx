@@ -27,7 +27,8 @@ export default function LocationMapSection({
       />
 
       <div className="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
-        <Script src={API} strategy="afterInteractive" />
+        <Script src={API} strategy="beforeInteractive" />
+
         <KakaoMapstest
           places={imagesWithMeta
             .filter((img) => img.lat && img.lng)
@@ -39,7 +40,6 @@ export default function LocationMapSection({
             }))}
         />
       </div>
-
       <ul className="text-sm text-gray-700 list-disc pl-5 space-y-1">
         {locationNames.map((name, idx) => (
           <li key={idx}>
