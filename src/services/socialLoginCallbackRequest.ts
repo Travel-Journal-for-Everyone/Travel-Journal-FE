@@ -30,7 +30,7 @@ export async function socialLoginCallbackRequest({
     method: "GET",
     headers: {
       "X-Platform": "web",
-      "Login-Test": "false",
+      // "Login-Test": "false",
       // 배포시에는 제외
     },
   });
@@ -54,8 +54,6 @@ export async function socialLoginCallbackRequest({
   setCookie("refreshToken", data.refreshToken);
   setCookie("deviceId", data.deviceId);
   setCookie("memberId", data.memberId.toString());
-
-  // Zustand 상태 업데이트
   useAuthStore.getState().setMemberIdOnly(data.memberId);
 
   return data;
