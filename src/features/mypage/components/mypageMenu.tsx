@@ -4,7 +4,7 @@ const menuItems = [
   { label: "프로필 수정", href: "/mypage/edit-profile" },
   { label: "돌아오고 싶은 여행 일지", href: "/mypage/favorite-journals" },
   { label: "저장한 여행 일지", href: "/mypage/saved-journals" },
-  { label: "계정 정보 관리", href: "/mypage/account" },
+  { label: "차단 회원 관리", href: "/mypage/block-member" },
   { label: "사용자 설정", href: "/mypage/settings" },
 ];
 
