@@ -34,7 +34,7 @@ export default function FollowPageView({ memberId }: Props) {
     : otherUser?.profileInfo.nickname ?? "회원";
 
   return (
-    <div className="max-w-xl mx-auto">
+    <div>
       <TopBar title={nickname} center={true} />
 
       {/* 팔로잉 / 팔로워 탭 */}
