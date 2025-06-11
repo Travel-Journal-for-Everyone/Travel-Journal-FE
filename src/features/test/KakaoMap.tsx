@@ -9,8 +9,7 @@ interface Place {
   name: string;
 }
 
-export default function KakaoMapstest({ places }: { places: Place[] }) {
-  // 지도 중심: 첫 번째 마커 위치, 없으면 서울
+export default function KakaoMap({ places }: { places: Place[] }) {
   const center = places.length
     ? { lat: places[0].lat, lng: places[0].lng }
     : { lat: 37.5665, lng: 126.978 };
