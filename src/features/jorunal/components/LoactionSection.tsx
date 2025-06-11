@@ -1,5 +1,5 @@
 import Script from "next/script";
-import KakaoMapstest from "@/features/test/kakaoMapstest";
+import KakaoMap from "@/features/test/KakaoMap";
 
 interface Props {
   imagesWithMeta: {
@@ -29,7 +29,7 @@ export default function LocationMapSection({
       <div className="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
         <Script src={API} strategy="beforeInteractive" />
 
-        <KakaoMapstest
+        <KakaoMap
           places={imagesWithMeta
             .filter((img) => img.lat && img.lng)
             .map((img, index) => ({
