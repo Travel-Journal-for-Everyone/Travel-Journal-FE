@@ -35,10 +35,11 @@ export function getLocationNameAsync(
 
 export function searchPlace(
   keyword: string,
-  callback: (lat: number, lng: number) => void
+  callback: (lat?: number, lng?: number, address?: string) => void
 ) {
   if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
     console.warn("Kakao Maps 스크립트가 아직 로드되지 않았습니다.");
+    callback();
     return;
   }
 
@@ -46,9 +47,13 @@ export function searchPlace(
   ps.keywordSearch(keyword, (data, status) => {
     if (status === window.kakao.maps.services.Status.OK) {
       const firstResult = data[0];
-      callback(parseFloat(firstResult.y), parseFloat(firstResult.x));
+      callback(
+        parseFloat(firstResult.y),
+        parseFloat(firstResult.x),
+        firstResult.address_name
+      );
     } else {
-      console.warn("위치 검색 실패:", status);
+      callback();
     }
   });
 }

@@ -1,28 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TopBar } from "@/features/common/TopBar";
 import Script from "next/script";
 import KakaoMap from "@/features/test/KakaoMap";
 import { KAKAO_MAP_API } from "@/app/constants/kakao";
 import ImageUploaderModal from "@/features/jorunal/components/ImageUploader";
-
 import Image from "next/image";
 
 export default function WriteJournalPage() {
   const [showUploaderModal, setShowUploaderModal] = useState(false);
   const [imagesWithMeta, setImagesWithMeta] = useState<
-    { file: File; lat?: number; lng?: number; keyword?: string }[]
+    {
+      file: File;
+      lat?: number;
+      lng?: number;
+      keyword?: string;
+      address?: string;
+      takenDateTime?: string;
+    }[]
   >([]);
-  const [locationNames, setLocationNames] = useState<string[]>([]);
-
-  useEffect(() => {
-    // keyword를 locationNames로 동기화
-    const updatedNames = imagesWithMeta.map((img) =>
-      img.keyword && img.keyword !== "위치명 없음" ? img.keyword : "위치명 없음"
-    );
-    setLocationNames(updatedNames);
-  }, [imagesWithMeta]);
 
   return (
     <div className="max-w-screen-sm mx-auto">
@@ -35,6 +32,7 @@ export default function WriteJournalPage() {
       />
 
       <form className="space-y-6">
+        {/* 사진 미리보기 */}
         {imagesWithMeta.length > 0 && (
           <div className="grid grid-cols-4 gap-2 mb-2">
             {imagesWithMeta.map((img, index) => (
@@ -57,6 +55,8 @@ export default function WriteJournalPage() {
             ))}
           </div>
         )}
+
+        {/* 사진 업로드 버튼 */}
         <button
           type="button"
           onClick={() => setShowUploaderModal(true)}
@@ -65,6 +65,7 @@ export default function WriteJournalPage() {
           {imagesWithMeta.length === 0 ? "사진 업로드" : "사진 리스트 수정하기"}
         </button>
 
+        {/* 기본 정보 입력 */}
         <div className="flex items-center gap-2">
           <p className="text-sm text-gray-500 font-medium">장소</p>
           <input
@@ -82,6 +83,7 @@ export default function WriteJournalPage() {
           />
         </div>
 
+        {/* 제목, 해시태그, 경험 */}
         <div className="space-y-4">
           <input
             type="text"
@@ -100,6 +102,7 @@ export default function WriteJournalPage() {
           />
         </div>
 
+        {/* 지도 및 주소/촬영일시 리스트 */}
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
           <h3 className="text-sm font-semibold">1일차</h3>
           <input
@@ -108,9 +111,9 @@ export default function WriteJournalPage() {
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
           />
 
+          {/* 지도 */}
           <div className="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
             <Script src={KAKAO_MAP_API} strategy="beforeInteractive" />
-
             <KakaoMap
               places={imagesWithMeta
                 .filter((img) => img.lat && img.lng)
@@ -122,10 +125,22 @@ export default function WriteJournalPage() {
                 }))}
             />
           </div>
+
+          {/* 상세 리스트 */}
           <ul className="text-sm text-gray-700 pl-1 space-y-1">
-            {locationNames.map((name, idx) => (
-              <li key={idx}>
-                {idx + 1}. {name}
+            {imagesWithMeta.map((img, idx) => (
+              <li key={idx} className="mb-1">
+                {idx + 1}. {img.keyword}
+                {img.address && (
+                  <span className="block text-xs text-gray-500">
+                    주소: {img.address}
+                  </span>
+                )}
+                {img.takenDateTime && (
+                  <span className="block text-xs text-gray-500">
+                    촬영일시: {img.takenDateTime}
+                  </span>
+                )}
               </li>
             ))}
           </ul>

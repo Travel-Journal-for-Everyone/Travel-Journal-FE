@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Plus } from "lucide-react";
-import { extractLatLng } from "@/lib/extractLatLng";
+import { extractLatLngAndDate } from "@/lib/extractLatLng";
 import { getLocationNameAsync, searchPlace } from "@/services/geoLoactionName";
 
 interface ImageMeta {
@@ -11,6 +11,8 @@ interface ImageMeta {
   lat?: number;
   lng?: number;
   keyword?: string;
+  takenDateTime: string;
+  address?: string;
 }
 
 interface Props {
@@ -21,9 +23,7 @@ interface Props {
 
 export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
   const [imagesWithMeta, setImagesWithMeta] = useState<ImageMeta[]>([]);
-  const [tempKeywords, setTempKeywords] = useState<{ [key: number]: string }>(
-    {}
-  );
+  const [tempKeywords, setTempKeywords] = useState<Record<string, string>>({});
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -32,14 +32,20 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
     const fileArray = Array.from(files);
     const updatedImages = await Promise.all(
       fileArray.map(async (file) => {
-        const { lat, lng } = await extractLatLng(file);
-
+        const { lat, lng, takenDateTime } = await extractLatLngAndDate(file);
         let locationName = "";
         if (lat && lng) {
           locationName = await getLocationNameAsync(lat, lng);
         }
 
-        return { file, lat, lng, keyword: locationName };
+        return {
+          file,
+          lat,
+          lng,
+          keyword: locationName,
+          takenDateTime: takenDateTime ?? "", // undefined 방지
+          address: locationName,
+        } satisfies ImageMeta; // 타입 안전보장
       })
     );
 
@@ -129,56 +135,113 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
         {imagesWithMeta.length > 0 && (
           <ul className="mt-12 text-gray-700 pl-2 space-y-2">
             {imagesWithMeta.map((img, idx) => (
-              <li key={idx} className="flex items-center gap-2">
-                <span>{idx + 1}.</span>
-                {img.keyword && img.keyword !== "위치명 없음" ? (
-                  <span>{img.keyword}</span>
-                ) : (
-                  <>
-                    <div className="relative flex items-center flex-1 border rounded border-gray-200 focus-within:border-purple-500">
-                      <span className="text-red-500">❗</span>
-                      <input
-                        type="text"
-                        placeholder="위치명을 입력해주세요"
-                        className="bg-transparent focus:outline-none py-0.5 flex-1"
-                        value={tempKeywords[idx] || ""}
-                        onChange={(e) => {
-                          const keyword = e.target.value;
-                          setTempKeywords((prev) => ({
-                            ...prev,
-                            [idx]: keyword,
-                          }));
-                        }}
-                      />
-                    </div>
+              <li key={idx} className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span>{idx + 1}.</span>
+                  {img.keyword && img.keyword !== "위치명 없음" ? (
+                    <>
+                      <span>{img.keyword}</span>
+                    </>
+                  ) : (
+                    <div className="flex gap-1 items-center flex-1">
+                      <div className="relative flex items-center flex-1 border rounded border-gray-200 focus-within:border-purple-500">
+                        <span className="text-red-500">❗</span>
+                        <input
+                          type="text"
+                          placeholder="위치명을 입력해주세요"
+                          className="bg-transparent focus:outline-none py-0.5 flex-1"
+                          value={tempKeywords[idx] || ""}
+                          onChange={(e) => {
+                            const keyword = e.target.value;
+                            setTempKeywords((prev) => ({
+                              ...prev,
+                              [idx]: keyword,
+                            }));
+                          }}
+                        />
+                      </div>
 
+                      <button
+                        type="button"
+                        className="bg-purple-500 text-white px-1 py-0.5 rounded"
+                        onClick={() => {
+                          const keyword = tempKeywords[idx];
+                          if (!keyword) return;
+
+                          searchPlace(keyword, (lat, lng, address) => {
+                            setImagesWithMeta((prev) =>
+                              prev.map((image, i) =>
+                                i === idx
+                                  ? { ...image, keyword, lat, lng, address }
+                                  : image
+                              )
+                            );
+                          });
+
+                          setTempKeywords((prev) => {
+                            const newTemp = { ...prev };
+                            delete newTemp[idx];
+                            return newTemp;
+                          });
+                        }}
+                      >
+                        위치 저장
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* 촬영일시 영역 */}
+                {img.takenDateTime && img.address ? (
+                  <div>
+                    <span className="text-xs text-gray-500  mr-2">
+                      도로명주소: {img.address}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      촬영일시: {img.takenDateTime}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1 ml-5">
+                    <span className="text-red-500 text-xs">❗</span>
+                    <input
+                      type="text"
+                      placeholder="촬영일시를 입력해주세요"
+                      className="border-b border-gray-300 bg-transparent text-xs flex-1 focus:outline-none"
+                      value={tempKeywords[`date-${idx}`] || ""}
+                      onChange={(e) => {
+                        const date = e.target.value;
+                        setTempKeywords((prev) => ({
+                          ...prev,
+                          [`date-${idx}`]: date,
+                        }));
+                      }}
+                    />
                     <button
                       type="button"
-                      className="bg-purple-500 text-white px-1 py-0.5 rounded"
+                      className="bg-purple-500 text-white px-1 py-0.5 rounded text-xs"
                       onClick={() => {
-                        const keyword = tempKeywords[idx];
-                        if (!keyword) return;
+                        const date = tempKeywords[`date-${idx}`];
+                        if (!date) return;
 
-                        searchPlace(keyword, (lat, lng) => {
-                          setImagesWithMeta((prev) =>
-                            prev.map((image, i) =>
-                              i === idx
-                                ? { ...image, keyword, lat, lng }
-                                : image
-                            )
-                          );
-                        });
+                        setImagesWithMeta((prev) =>
+                          prev.map((image, i) =>
+                            i === idx
+                              ? { ...image, takenDateTime: date }
+                              : image
+                          )
+                        );
 
                         setTempKeywords((prev) => {
                           const newTemp = { ...prev };
-                          delete newTemp[idx];
+                          delete newTemp[`date-${idx}`];
                           return newTemp;
                         });
                       }}
                     >
-                      위치 저장
+                      저장
                     </button>
-                  </>
+                  </div>
                 )}
               </li>
             ))}
