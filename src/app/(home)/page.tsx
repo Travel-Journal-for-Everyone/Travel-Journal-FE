@@ -27,7 +27,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-4 md:gap-24  md:max-w-screen-lg justify-center md:justify-normal mb-24 md:my-24 md:mx-20">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-24  md:max-w-screen-lg justify-center md:justify-normal  md:mt-24 md:mx-20">
         <div className="hidden md:flex flex-col items-center gap-4">
           <h2 className="text-lg font-semibold">
             어떤 멋진 여행을 계획 하시나요? <span className="ml-1">😎</span>
@@ -63,7 +63,7 @@ export default function Home() {
         </div>
         <section>
           <div className="flex justify-center items-center">
-            <div className="relative w-full md:min-w-[400px] max-w-[400px]">
+            <div className="relative w-full md:min-w-[500px]">
               {!data ? (
                 <RegionMap />
               ) : (
@@ -85,13 +85,13 @@ export default function Home() {
                       return (
                         <div
                           key={regionKey}
-                          className="absolute text-center text-xs pointer-events-none"
+                          className="absolute text-center md:text-sm text-xs pointer-events-none md:max-w-full md:min-w-[100px] min-w-[80px]"
                           style={{ top: y, left: x }}
                         >
-                          <p className="font-semibold">{label}</p>
+                          <p className="font-semibold mt-2 md:mt-0">{label}</p>
                           {regionData ? (
                             <>
-                              <div className="flex flex-wrap gap-1 items-center mt-1.5 text-xs md:text-md">
+                              <div className="hidden md:flex flex-wrap gap-1 items-center mt-1.5 ">
                                 <div className="flex flex-wrap">
                                   <div className="relative w-4 h-4">
                                     <Image
@@ -101,7 +101,10 @@ export default function Home() {
                                     />
                                   </div>
                                   <span className=" text-gray7">
-                                    {regionData.travelDiaryCount}일지
+                                    {regionData.travelDiaryCount > 99
+                                      ? "99+"
+                                      : regionData.travelDiaryCount}
+                                    일지
                                   </span>
                                 </div>
                                 <div className="flex flex-wrap">
@@ -112,8 +115,11 @@ export default function Home() {
                                       fill
                                     />
                                   </div>
-                                  <span className=" text-gray7">
-                                    {regionData.placesCount}곳
+                                  <span className=" text-gray7 ">
+                                    {regionData.placesCount > 99
+                                      ? "99+"
+                                      : regionData.placesCount}
+                                    곳
                                   </span>
                                 </div>
                               </div>
