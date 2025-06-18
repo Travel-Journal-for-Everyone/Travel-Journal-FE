@@ -1,11 +1,11 @@
 "use client";
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useMyInfo } from "@/features/member/hooks/useMemberInfo";
 import { Search } from "lucide-react";
 import { regionMapData } from "@/features/map/constants/RegionMapData";
 import { SetStateAction, useState } from "react";
-import { useAuthStore } from "@/store/useAuthStore";
 import RegionDetailPanel from "@/features/map/components/RegionData";
 import RegionMap from "@/features/map/RegionMap";
 import ProfileCard from "@/features/common/ProfileCard";
@@ -14,23 +14,17 @@ import RegionBottomSheet from "@/features/map/components/RegionDataMobile";
 
 export default function Home() {
   const router = useRouter();
-  const { data, isLoading } = useMyInfo();
+  const { data, isError } = useMyInfo();
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const regions = data?.regions ?? [];
-  const userId = useAuthStore.getState().user?.memberId;
 
   useEffect(() => {
-    // 로딩이 끝났고, data가 null이면 인증 실패로 판단
-    if (!isLoading && data === null) {
-      console.log("로그인 필요! data:", data);
+    if (isError) {
+      console.log("로그인 필요! (isError)", data);
       router.push("/login");
     }
-  }, [isLoading, data, router]);
+  }, [isError, router]);
 
-  if (isLoading || data === undefined) {
-    // 아직 로딩 중이거나 초기상태이므로 아무것도 렌더링하지 않음
-    return null;
-  }
   return (
     <>
       <div className="flex flex-col md:flex-row gap-4 md:gap-24  md:max-w-screen-lg justify-center md:justify-normal mb-24 md:my-24 md:mx-20">
@@ -55,7 +49,7 @@ export default function Home() {
             <div></div>
           ) : (
             <ProfileCard
-              memberId={userId}
+              memberId={data.memberId}
               mobile={true}
               nickname={data.profileInfo.nickname}
               profileImageUrl={data.profileInfo.profileImageUrl}

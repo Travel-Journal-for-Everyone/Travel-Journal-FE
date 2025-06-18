@@ -5,9 +5,15 @@ import { useMyInfo } from "@/features/member/hooks/useMemberInfo";
 import Button from "./CommonBtn";
 import Image from "next/image";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const { data: member, isLoading } = useMyInfo();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <header className="hidden md:block w-full bg-white shadow-gray-50 shadow-sm fixed top-0 left-0 z-50 py-4">
@@ -27,7 +33,7 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          {isLoading ? null : member ? (
+          {isClient && !isLoading && member ? (
             <>
               <Link href="/mypage" className="flex items-center gap-2">
                 <Image
@@ -42,14 +48,14 @@ const Header = () => {
                 <Search />
               </Link>
             </>
-          ) : (
+          ) : isClient && !isLoading ? (
             <Link
               href="/login"
               className="text-gray-600 hover:text-gray-900 text-sm"
             >
               로그인 / 회원가입
             </Link>
-          )}
+          ) : null}
 
           <Link href="/journal/write">
             <Button variant="outline" size="sm">
@@ -61,5 +67,4 @@ const Header = () => {
     </header>
   );
 };
-
 export default Header;

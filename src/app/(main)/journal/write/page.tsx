@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TopBar } from "@/features/common/TopBar";
 import Script from "next/script";
 import KakaoMap from "@/features/test/KakaoMap";
@@ -10,6 +10,7 @@ import Image from "next/image";
 
 export default function WriteJournalPage() {
   const [showUploaderModal, setShowUploaderModal] = useState(false);
+  const [isKakaoReady, setIsKakaoReady] = useState(false);
   const [imagesWithMeta, setImagesWithMeta] = useState<
     {
       file: File;
@@ -20,6 +21,12 @@ export default function WriteJournalPage() {
       takenDateTime?: string;
     }[]
   >([]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.kakao?.maps) {
+      setIsKakaoReady(true);
+    }
+  }, []);
 
   return (
     <div className="max-w-screen-sm mx-auto">
@@ -113,17 +120,31 @@ export default function WriteJournalPage() {
 
           {/* 지도 */}
           <div className="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
-            <Script src={KAKAO_MAP_API} strategy="beforeInteractive" />
-            <KakaoMap
-              places={imagesWithMeta
-                .filter((img) => img.lat && img.lng)
-                .map((img, index) => ({
-                  id: index.toString(),
-                  lat: img.lat!,
-                  lng: img.lng!,
-                  name: img.keyword ?? `장소 ${index + 1}`,
-                }))}
+            <Script
+              src={KAKAO_MAP_API}
+              strategy="afterInteractive"
+              onLoad={() => {
+                if (window.kakao?.maps) {
+                  setIsKakaoReady(true);
+                }
+              }}
             />
+            {isKakaoReady ? (
+              <KakaoMap
+                places={imagesWithMeta
+                  .filter((img) => img.lat && img.lng)
+                  .map((img, index) => ({
+                    id: index.toString(),
+                    lat: img.lat!,
+                    lng: img.lng!,
+                    name: img.keyword ?? `장소 ${index + 1}`,
+                  }))}
+              />
+            ) : (
+              <p className="text-center py-4 text-sm text-gray-500">
+                지도를 불러오는 중...
+              </p>
+            )}
           </div>
 
           {/* 상세 리스트 */}
