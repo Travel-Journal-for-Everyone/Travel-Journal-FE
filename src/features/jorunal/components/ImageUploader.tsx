@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Plus } from "lucide-react";
 import { extractLatLngAndDate } from "@/lib/extractLatLng";
 import { getLocationNameAsync, searchPlace } from "@/services/geoLoactionName";
+import { uploadPhotos } from "@/services/photo";
 
 interface ImageMeta {
   file: File;
@@ -52,7 +53,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
     setImagesWithMeta((prev) => [...prev, ...updatedImages]);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const hasEmptyKeyword = imagesWithMeta.some(
       (img) => !img.keyword || img.keyword === "위치명 없음"
     );
@@ -64,8 +65,37 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
       return;
     }
 
-    onSave(imagesWithMeta);
-    onClose();
+    try {
+      // 1. File 배열 추출
+      const files = imagesWithMeta.map((img) => img.file);
+
+      // 2. 사진 업로드 API 호출
+      const uploadResult = await uploadPhotos(files); // [{ uploadId, uploadFilename }...]
+
+      // 3. 파일 이름 기준으로 응답 결과 매핑
+      const imagesWithUploadMeta = imagesWithMeta.map((img) => {
+        const match = uploadResult.find(
+          (res) => res.uploadFilename === img.file.name
+        );
+
+        if (!match) {
+          throw new Error(`파일 매칭 실패: ${img.file.name}`);
+        }
+
+        return {
+          ...img,
+          uploadId: match.uploadId,
+          uploadFilename: match.uploadFilename,
+        };
+      });
+
+      // 4. onSave 호출 (최종 데이터 전달)
+      onSave(imagesWithUploadMeta);
+      onClose();
+    } catch (error) {
+      console.error("업로드 실패:", error);
+      alert("사진 업로드에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   if (!isOpen) return null;
