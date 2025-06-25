@@ -40,9 +40,9 @@ export default function ProfileCard({
 
   return (
     <div
-      className={`${containerClass} max-w-full flex items-center gap-10 mx-auto md:my-4`}
+      className={`${containerClass} max-w-full flex items-center gap-6 mx-auto md:my-4`}
     >
-      <div className="relative w-16 h-16 overflow-hidden">
+      <div className="relative w-12 h-12 md:w-16 md:h-16 overflow-hidden">
         <Image
           src={profileImageUrl || "/default-avatar.png"}
           alt="프로필 이미지"

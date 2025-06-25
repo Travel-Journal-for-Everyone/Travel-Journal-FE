@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookText, Search, MapPin, User } from "lucide-react";
 import { useEffect, useState } from "react";
+import WriteButton from "./WriteButton";
 
 const tabs = [
   { href: "/", icon: BookText, label: "나의 일지" },
@@ -16,17 +17,17 @@ export default function MobileNavBar() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       const currentY = window.scrollY;
-
       if (currentY > lastScrollY && currentY > 50) {
-        setHidden(true); // 스크롤 내릴 때 숨김
+        setHidden(true);
       } else {
-        setHidden(false); // 스크롤 올릴 때 나타남
+        setHidden(false);
       }
-
       setLastScrollY(currentY);
     };
 
@@ -34,43 +35,52 @@ export default function MobileNavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  return (
-    <nav
-      className={`fixed bottom-0 left-0 right-0 bg-white border-t shadow z-50 md:hidden pb-6 transition-transform duration-300 ${
-        hidden ? "translate-y-full" : "translate-y-0"
-      }`}
-    >
-      <ul className="flex justify-around items-center">
-        {tabs.map((tab) => {
-          const isActive =
-            tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+  if (!mounted) return null;
 
-          return (
-            <li
-              key={tab.href}
-              className="relative flex flex-col items-center py-2 text-xs"
-            >
-              <Link href={tab.href} className="flex flex-col items-center">
-                <tab.icon
-                  className={`w-6 h-6 mb-0.5 ${
-                    isActive ? "text-primary-main" : "text-gray-400"
-                  }`}
-                />
-                <span
-                  className={
-                    isActive ? "text-primary-main font-medium" : "text-gray-400"
-                  }
-                >
-                  {tab.label}
-                </span>
-              </Link>
-              {isActive && (
-                <span className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 w-4 h-[3px] bg-primary-light rounded-full" />
-              )}
-            </li>
-          );
-        })}
-      </ul>
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex flex-col md:hidden">
+      <WriteButton />
+      <div
+        className={`bg-white border-t shadow pb-6 transition-transform duration-300 ${
+          hidden ? "translate-y-full" : "translate-y-0"
+        }`}
+      >
+        <ul className="flex justify-around items-center">
+          {tabs.map((tab) => {
+            const isActive =
+              tab.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(tab.href);
+
+            return (
+              <li
+                key={tab.href}
+                className="relative flex flex-col items-center py-2 text-xs"
+              >
+                <Link href={tab.href} className="flex flex-col items-center">
+                  <tab.icon
+                    className={`w-6 h-6 mb-0.5 ${
+                      isActive ? "text-primary-main" : "text-gray-400"
+                    }`}
+                  />
+                  <span
+                    className={
+                      isActive
+                        ? "text-primary-main font-medium"
+                        : "text-gray-400"
+                    }
+                  >
+                    {tab.label}
+                  </span>
+                </Link>
+                {isActive && (
+                  <span className="absolute -bottom-0 left-1/2 transform -translate-x-1/2 w-4 h-[3px] bg-primary-light rounded-full" />
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 }

@@ -24,7 +24,7 @@ export default function KakaoMap({ places }: { places: Place[] }) {
         >
           <div
             style={{
-              backgroundColor: "#A55FF5", // 보라색
+              backgroundColor: "#A55FF5",
               color: "white",
               width: "30px",
               height: "30px",
@@ -36,7 +36,7 @@ export default function KakaoMap({ places }: { places: Place[] }) {
               fontWeight: "bold",
             }}
           >
-            {String.fromCharCode(65 + idx)} {/* A, B, C... */}
+            {String.fromCharCode(65 + idx)}
           </div>
         </CustomOverlayMap>
       ))}

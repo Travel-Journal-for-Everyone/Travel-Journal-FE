@@ -7,6 +7,7 @@ import KakaoMap from "@/features/test/KakaoMap";
 import { KAKAO_MAP_API } from "@/app/constants/kakao";
 import ImageUploaderModal from "@/features/jorunal/components/ImageUploader";
 import Image from "next/image";
+import { useJournalSubmit } from "@/features/jorunal/hooks/useCreateJournal";
 
 export default function WriteJournalPage() {
   const [showUploaderModal, setShowUploaderModal] = useState(false);
@@ -21,6 +22,39 @@ export default function WriteJournalPage() {
       takenDateTime?: string;
     }[]
   >([]);
+
+  // 📌 form 상태
+  const [region, setRegion] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [title, setTitle] = useState("");
+  const [hashTagInput, setHashTagInput] = useState(""); // 쉼표로 분리
+  const [description, setDescription] = useState("");
+  const [dayDescription, setDayDescription] = useState("");
+
+  const { submitJournal } = useJournalSubmit();
+
+  const handleSave = async () => {
+    try {
+      const result = await submitJournal(imagesWithMeta, {
+        startDate,
+        endDate,
+        region,
+        title,
+        hashTag: hashTagInput
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
+        description,
+        dayDescription,
+      });
+
+      alert(`✅ 여행일지 저장 완료! (ID: ${result.journal_id})`);
+    } catch (e) {
+      console.error(e);
+      alert("저장 실패");
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.kakao?.maps) {
@@ -39,7 +73,7 @@ export default function WriteJournalPage() {
       />
 
       <form className="space-y-6">
-        {/* 사진 미리보기 */}
+        {/* 이미지 미리보기 */}
         {imagesWithMeta.length > 0 && (
           <div className="grid grid-cols-4 gap-2 mb-2">
             {imagesWithMeta.map((img, index) => (
@@ -78,33 +112,57 @@ export default function WriteJournalPage() {
           <input
             type="text"
             placeholder="예) 제주특별시"
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
             className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm"
           />
         </div>
-        <div className="mt-4 flex items-center gap-2">
-          <p className="text-sm text-gray-500 font-medium ">일시</p>
-          <input
-            type="text"
-            placeholder="예) 2025.02.08 ~ 2025.02.12"
-            className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm"
-          />
-        </div>
+        <div className="mt-4 flex items-center gap-4">
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-500 font-medium mb-1">
+              시작일
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+            />
+          </div>
 
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-500 font-medium mb-1">
+              종료일
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+            />
+          </div>
+        </div>
         {/* 제목, 해시태그, 경험 */}
         <div className="space-y-4">
           <input
             type="text"
             placeholder="일지 제목을 입력하세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
           />
           <input
             type="text"
-            placeholder="나만의 해시태그를 입력하세요"
+            placeholder="나만의 해시태그를 입력하세요 (쉼표로 구분)"
+            value={hashTagInput}
+            onChange={(e) => setHashTagInput(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
           />
           <textarea
             rows={4}
             placeholder="여행에서 느꼈던 나만의 색다른 경험을 작성해 보세요!"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
           />
         </div>
@@ -115,6 +173,8 @@ export default function WriteJournalPage() {
           <input
             type="text"
             placeholder="1일차의 내용을 적어주세요"
+            value={dayDescription}
+            onChange={(e) => setDayDescription(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
           />
 
@@ -167,6 +227,14 @@ export default function WriteJournalPage() {
           </ul>
         </div>
       </form>
+
+      <button
+        type="button"
+        onClick={handleSave}
+        className="bg-purple-600 text-white w-full py-2 rounded mt-4"
+      >
+        여행일지 저장하기
+      </button>
     </div>
   );
 }
