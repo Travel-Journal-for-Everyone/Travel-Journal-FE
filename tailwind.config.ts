@@ -55,6 +55,10 @@ export default {
         "screen-without-header": "calc(100vh - 3rem)",
         "screen-without-nav": "calc(100vh - 4rem)",
       },
+      maxWidth: {
+        content: "1440px",
+        desktop: "1920px",
+      },
     },
   },
 
