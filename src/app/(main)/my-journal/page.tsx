@@ -49,9 +49,9 @@ export default function MyJournalList() {
       ))}
 
       {/* 디버깅용 pre */}
-      <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto">
+      {/* <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto">
         {JSON.stringify(data.content, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 }
