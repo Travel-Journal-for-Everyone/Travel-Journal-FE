@@ -41,7 +41,7 @@ export default function MobileNavBar() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex flex-col md:hidden">
       <WriteButton />
       <div
-        className={`bg-white border-t shadow pb-6 transition-transform duration-300 ${
+        className={`bg-white border-t shadow transition-transform duration-300 ${
           hidden ? "translate-y-full" : "translate-y-0"
         }`}
       >

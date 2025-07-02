@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus } from "lucide-react";
 import { extractLatLngAndDate } from "@/lib/extractLatLng";
@@ -25,6 +25,18 @@ interface Props {
 export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
   const [imagesWithMeta, setImagesWithMeta] = useState<ImageMeta[]>([]);
   const [tempKeywords, setTempKeywords] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -102,7 +114,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-4 max-w-[600px] w-full min-h-screen flex flex-col">
+      <div className="bg-white rounded-lg p-4 w-11/12 max-w-md min-h-[60dvh] flex flex-col">
         <h3 className="font-semibold text-lg text-center pb-4">
           여행 사진 업로드
         </h3>
@@ -279,7 +291,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
         )}
 
         {/* 하단 버튼 */}
-        <div className="flex mt-auto gap-2">
+        <div className="flex mt-auto gap-2 pb-[env(safe-area-inset-bottom)]">
           <button
             onClick={onClose}
             className="text-gray-500 text-sm flex-1 rounded bg-gray-300"
