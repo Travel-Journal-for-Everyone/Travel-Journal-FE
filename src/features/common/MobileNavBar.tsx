@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookText, Search, MapPin, User } from "lucide-react";
-import { useEffect, useState } from "react";
 import WriteButton from "./WriteButton";
 
 const tabs = [
@@ -15,36 +14,11 @@ const tabs = [
 
 export default function MobileNavBar() {
   const pathname = usePathname();
-  const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY > lastScrollY && currentY > 50) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
-      setLastScrollY(currentY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
-
-  if (!mounted) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex flex-col md:hidden">
       <WriteButton />
-      <div
-        className={`bg-white border-t shadow transition-transform duration-300 ${
-          hidden ? "translate-y-full" : "translate-y-0"
-        }`}
-      >
+      <div className="bg-white border-t shadow transition-transform duration-300">
         <ul className="flex justify-around items-center">
           {tabs.map((tab) => {
             const isActive =
