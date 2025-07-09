@@ -11,7 +11,7 @@ export default function HomeLayout({
   const hideHeader = pathname.startsWith("/profile/setup");
 
   return (
-    <div className="w-full max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 md:pt-20 mb-20 md:mb-0  min-h-dvh">
+    <div className="w-full max-w-[1440px] mx-auto px-4 md:px-8 lg:px-16 md:pt-20 pt-8 min-h-dvh">
       {!hideHeader && <Header />}
       <main>{children}</main>
     </div>
