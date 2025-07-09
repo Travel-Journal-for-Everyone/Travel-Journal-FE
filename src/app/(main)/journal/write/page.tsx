@@ -63,7 +63,7 @@ export default function WriteJournalPage() {
   }, []);
 
   return (
-    <div className="max-w-screen-sm mx-auto">
+    <div className="max-w-screen-sm mx-auto pb-20">
       <TopBar title="여행 일지 작성하기" center />
 
       <ImageUploaderModal

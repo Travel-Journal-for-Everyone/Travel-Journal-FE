@@ -114,7 +114,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-4 w-11/12 max-w-md min-h-[60dvh] flex flex-col">
+      <div className="bg-white rounded-lg p-4 w-full max-w-screen-sm min-h-[60dvh] flex flex-col">
         <h3 className="font-semibold text-lg text-center pb-4">
           여행 사진 업로드
         </h3>
