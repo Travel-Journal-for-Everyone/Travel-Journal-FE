@@ -13,9 +13,7 @@ export default function MyJournalList() {
   if (!data || data.content.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center fixed top-0 bottom-0 left-0 right-0">
-        <h2 className="text-xl font-semibold mb-2">
-          완성된 여행일지가 없어요.
-        </h2>
+        <h2 className="text-xl font-semibold mb-2">완성된 여행일지가 없어요.</h2>
         <Link
           href="/journal/write/"
           className="px-6 py-2 rounded-full bg-primary-main text-white hover:brightness-110 transition"
@@ -29,42 +27,30 @@ export default function MyJournalList() {
   return (
     <div className="max-w-screen-md mx-auto px-4 py-8 space-y-6">
       {data.content.map((journal) => (
-        <div
-          key={journal.journalId}
-          className="border rounded-lg p-4 shadow-sm hover:shadow-md transition"
-        >
-          {journal.coverImageUrl && (
-            <div className="mb-4 aspect-video relative w-full rounded overflow-hidden">
-              <Image
-                src={journal.coverImageUrl}
-                alt={journal.title}
-                fill
-                className="object-cover"
-              />
+        <div key={journal.journalId} className="my-4">
+          <Link href={`/my-journal/detail/${journal.journalId}`}>
+            <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition cursor-pointer">
+              {journal.coverImageUrl && (
+                <div className="mb-4 aspect-video relative w-full rounded overflow-hidden">
+                  <Image src={journal.coverImageUrl} alt={journal.title} fill className="object-cover" />
+                </div>
+              )}
+              <h2 className="text-lg font-bold mb-2">{journal.title}</h2>
+              <p className="text-sm text-gray-500 mb-1">
+                {journal.startDate} ~ {journal.endDate}
+              </p>
+              <p className="text-sm text-gray-500">{journal.region}</p>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {journal.hashTag.map((tag) => (
+                  <span key={tag} className="text-xs bg-primary-light text-primary-main px-2 py-1 rounded-full">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
             </div>
-          )}
-          <h2 className="text-lg font-bold mb-2">{journal.title}</h2>
-          <p className="text-sm text-gray-500 mb-1">
-            {journal.startDate} ~ {journal.endDate}
-          </p>
-          <p className="text-sm text-gray-500">{journal.region}</p>
-          <div className="flex gap-2 mt-2 flex-wrap">
-            {journal.hashTag.map((tag) => (
-              <span
-                key={tag}
-                className="text-xs bg-primary-light text-primary-main px-2 py-1 rounded-full"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
+          </Link>
         </div>
       ))}
-
-      {/* 디버깅용 pre */}
-      <pre className="bg-gray-100 p-4 rounded text-xs overflow-auto">
-        {JSON.stringify(data.content, null, 2)}
-      </pre>
     </div>
   );
 }
