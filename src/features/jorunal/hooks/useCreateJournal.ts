@@ -1,7 +1,8 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { uploadPhotos } from "@/services/photo";
 import { generateJournalDaySpots } from "@/lib/generateJournalDaySpots";
-import { formatDateToDot, normalizeTakenDateTime } from "@/lib/formatDateToDot";
+import { normalizeTakenDateTime } from "@/lib/formatDateToDot";
+import { differenceInDays, parseISO } from "date-fns";
 
 export interface ImageMeta {
   file: File;
@@ -19,22 +20,22 @@ interface FormValues {
   title: string;
   hashTag: string[];
   description: string;
-  dayDescription: string;
 }
 
 export function useJournalSubmit() {
   const submitJournal = async (
-    imagesWithMeta: ImageMeta[],
+    groupedImages: Record<number, ImageMeta[]>,
+    dayDescriptions: Record<number, string>,
     formValues: FormValues
   ) => {
-    if (imagesWithMeta.length === 0) {
+    const allImages = Object.values(groupedImages).flat();
+
+    if (allImages.length === 0) {
       alert("사진을 업로드해주세요.");
       return;
     }
 
-    const hasEmptyKeyword = imagesWithMeta.some(
-      (img) => !img.keyword || img.keyword === "위치명 없음"
-    );
+    const hasEmptyKeyword = allImages.some((img) => !img.keyword || img.keyword === "위치명 없음");
     if (hasEmptyKeyword) {
       alert("위치명이 없는 사진이 있습니다.");
       return;
@@ -42,48 +43,52 @@ export function useJournalSubmit() {
 
     try {
       // 1. 이미지 업로드
-      const files = imagesWithMeta.map((img) => img.file);
+      const files = allImages.map((img) => img.file);
       const uploadResults = await uploadPhotos(files);
 
-      // 2. 메타데이터 정리
-      const photoMetadataList = imagesWithMeta.map((img) => {
-        const matched = uploadResults.find(
-          (res) => res.uploadFilename === img.file.name
-        );
-        if (!matched) throw new Error(`업로드 결과 누락: ${img.file.name}`);
+      // 2. 날짜 계산
+      const start = parseISO(formValues.startDate);
+      const end = parseISO(formValues.endDate);
+      const days = differenceInDays(end, start) + 1;
+      const nights = days - 1;
+
+      // 1. 전역 photoMetadataList 만들기
+      const photoMetadataList = Object.entries(groupedImages).flatMap(([dayStr, images]) => {
+        const dayNumber = Number(dayStr);
+
+        return images.map((img) => {
+          const matched = uploadResults.find((res) => res.uploadFilename === img.file.name);
+          if (!matched) throw new Error(`업로드 결과 누락: ${img.file.name}`);
+
+          return {
+            uploadId: matched.uploadId,
+            uploadFilename: matched.uploadFilename,
+            latitude: img.lat,
+            longitude: img.lng,
+            address: img.address,
+            takenDateTime: img.takenDateTime ? normalizeTakenDateTime(img.takenDateTime) : undefined,
+            description: `${img.keyword}에서 찍은 사진`,
+            dayNumber, // ✅ 전역에서 구분
+          };
+        });
+      });
+
+      // 2. journalDays 생성
+      const journalDays = Object.entries(groupedImages).map(([dayStr, images]) => {
+        const dayNumber = Number(dayStr);
+        const journalDaySpots = generateJournalDaySpots(images);
 
         return {
-          uploadId: matched.uploadId,
-          uploadFilename: matched.uploadFilename,
-          latitude: img.lat,
-          longitude: img.lng,
-          address: img.address,
-          takenDateTime: img.takenDateTime
-            ? normalizeTakenDateTime(img.takenDateTime)
-            : undefined,
-          description: `${img.keyword}에서 찍은 사진`,
-          dayNumber: 1,
+          dayNumber,
+          description: dayDescriptions[dayNumber] || `${dayNumber}일차`,
+          journalDaySpots,
         };
       });
 
-      // 3. 자동 장소 생성
-      const journalDaySpots = generateJournalDaySpots(imagesWithMeta);
-
-      const journalDays = [
-        {
-          dayNumber: 1,
-          description: formValues.dayDescription,
-          journalDaySpots,
-        },
-      ];
-
-      // 4. 기간 계산 (단순하게 계산 예시)
-      const nights = 2; // 추후 자동 계산 로직 삽입 가능
-      const days = 3;
-
+      // 3. 최종 body
       const body = {
-        startDate: formatDateToDot(formValues.startDate),
-        endDate: formatDateToDot(formValues.endDate),
+        startDate: formValues.startDate,
+        endDate: formValues.endDate,
         nights,
         days,
         region: formValues.region,
@@ -92,17 +97,14 @@ export function useJournalSubmit() {
         description: formValues.description,
         journalDays,
         photoMetadataList,
+        thumbnailUploadId: uploadResults[0]?.uploadId,
       };
 
-      const response = await axiosInstance.post(
-        "/v1/members/journal/create",
-        body
-      );
-
+      const response = await axiosInstance.post("/v1/members/journal/create", body);
       return response.data;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      throw error;
     }
   };
 
