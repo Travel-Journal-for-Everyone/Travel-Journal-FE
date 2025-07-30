@@ -21,11 +21,7 @@ export const metadata: Metadata = {
   description: "여행일지를 작성하고 공유해보세요!",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased`}>

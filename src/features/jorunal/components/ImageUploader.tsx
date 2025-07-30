@@ -43,37 +43,47 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
     if (!files) return;
 
     const fileArray = Array.from(files);
+
     const updatedImages = await Promise.all(
       fileArray.map(async (file) => {
-        const { lat, lng, takenDateTime } = await extractLatLngAndDate(file);
+        const extracted = await extractLatLngAndDate(file);
+
         let locationName = "";
-        if (lat && lng) {
-          locationName = await getLocationNameAsync(lat, lng);
+        if (extracted.lat && extracted.lng) {
+          locationName = await getLocationNameAsync(extracted.lat, extracted.lng);
         }
 
         return {
           file,
-          lat,
-          lng,
+          lat: extracted.lat,
+          lng: extracted.lng,
           keyword: locationName,
-          takenDateTime: takenDateTime ?? "", // undefined 방지
+          takenDateTime: extracted.takenDateTime ?? "", // 일시 없으면 빈 문자열
           address: locationName,
-        } satisfies ImageMeta; // 타입 안전보장
+        } satisfies ImageMeta;
       })
     );
 
-    setImagesWithMeta((prev) => [...prev, ...updatedImages]);
+    setImagesWithMeta((prev) => {
+      // 날짜가 없는 경우에만 takenDateTime 추가, 이미 있다면 유지
+      return [
+        ...prev,
+        ...updatedImages.map((img) => {
+          const hasTakenDate = !!img.takenDateTime;
+          return {
+            ...img,
+            takenDateTime: hasTakenDate ? img.takenDateTime : "", // 사용자 입력을 허용할 여지
+          };
+        }),
+      ];
+    });
   };
 
   const handleSave = async () => {
-    const hasEmptyKeyword = imagesWithMeta.some(
-      (img) => !img.keyword || img.keyword === "위치명 없음"
-    );
+    const hasEmptyKeyword = imagesWithMeta.some((img) => !img.keyword || img.keyword === "위치명 없음");
 
     if (hasEmptyKeyword) {
-      alert(
-        "위치명이 없는 사진이 있습니다. 모든 사진에 위치명을 입력해주세요."
-      );
+      alert("위치명이 없는 사진이 있습니다. 모든 사진에 위치명을 입력해주세요.");
       return;
     }
 
@@ -86,9 +96,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
       // 3. 파일 이름 기준으로 응답 결과 매핑
       const imagesWithUploadMeta = imagesWithMeta.map((img) => {
-        const match = uploadResult.find(
-          (res) => res.uploadFilename === img.file.name
-        );
+        const match = uploadResult.find((res) => res.uploadFilename === img.file.name);
 
         if (!match) {
           throw new Error(`파일 매칭 실패: ${img.file.name}`);
@@ -115,35 +123,19 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-4 w-full max-w-screen-sm min-h-[60dvh] flex flex-col">
-        <h3 className="font-semibold text-lg text-center pb-4">
-          여행 사진 업로드
-        </h3>
+        <h3 className="font-semibold text-lg text-center pb-4">여행 사진 업로드</h3>
 
         <div className="grid grid-cols-4 gap-2">
           {/* 이미지 추가 버튼 */}
           <label className="aspect-square border border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-100 cursor-pointer hover:bg-gray-200">
             <Plus className="w-6 h-6 text-gray-500" />
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              className="hidden"
-            />
+            <input type="file" accept="image/*" multiple onChange={handleImageChange} className="hidden" />
           </label>
 
           {/* 이미지 미리보기 */}
           {imagesWithMeta.map((img, index) => (
-            <div
-              key={index}
-              className="relative aspect-square border rounded-lg overflow-hidden"
-            >
-              <Image
-                src={URL.createObjectURL(img.file)}
-                alt="uploaded"
-                fill
-                className="object-cover"
-              />
+            <div key={index} className="relative aspect-square border rounded-lg overflow-hidden">
+              <Image src={URL.createObjectURL(img.file)} alt="uploaded" fill className="object-cover" />
 
               {/* 좌측 상단 번호 */}
               <div className="absolute top-1 left-1 bg-black/60 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -155,9 +147,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
                 type="button"
                 className="absolute top-1 right-1 bg-black/60 text-red-500 rounded-full w-5 h-5 flex items-center justify-center"
                 onClick={() => {
-                  setImagesWithMeta((prev) =>
-                    prev.filter((_, i) => i !== index)
-                  );
+                  setImagesWithMeta((prev) => prev.filter((_, i) => i !== index));
                 }}
               >
                 ×
@@ -168,9 +158,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
         {/* 사진 없을 때 안내문구 */}
         {imagesWithMeta.length === 0 && (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            사진을 추가해주세요.
-          </div>
+          <div className="flex-1 flex items-center justify-center text-gray-400">사진을 추가해주세요.</div>
         )}
 
         {/* 위치명 입력 및 지정 완료 */}
@@ -181,9 +169,7 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
                 <div className="flex items-center gap-2">
                   <span>{idx + 1}.</span>
                   {img.keyword && img.keyword !== "위치명 없음" ? (
-                    <>
-                      <span>{img.keyword}</span>
-                    </>
+                    <span>{img.keyword}</span>
                   ) : (
                     <div className="flex gap-1 items-center flex-1">
                       <div className="relative flex items-center flex-1 border rounded border-gray-200 focus-within:border-purple-500">
@@ -214,12 +200,18 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
                             setImagesWithMeta((prev) =>
                               prev.map((image, i) =>
                                 i === idx
-                                  ? { ...image, keyword, lat, lng, address }
+                                  ? {
+                                      ...image,
+                                      keyword,
+                                      lat,
+                                      lng,
+                                      address,
+                                      takenDateTime: image.takenDateTime,
+                                    }
                                   : image
                               )
                             );
                           });
-
                           setTempKeywords((prev) => {
                             const newTemp = { ...prev };
                             delete newTemp[idx];
@@ -233,50 +225,54 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
                   )}
                 </div>
 
-                {/* 촬영일시 영역 */}
-                {img.takenDateTime && img.address ? (
-                  <div>
-                    <span className="text-xs text-gray-500  mr-2">
-                      도로명주소: {img.address}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      촬영일시: {img.takenDateTime}
-                    </span>
+                {/* ✅ 촬영일시 및 주소 영역 */}
+                {img.takenDateTime ? (
+                  <div className="ml-5 text-xs text-gray-500">
+                    {img.address && <div className="mb-0.5">도로명주소: {img.address}</div>}
+                    <div>촬영일시: {img.takenDateTime}</div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 ml-5">
                     <span className="text-red-500 text-xs">❗</span>
                     <input
-                      type="text"
-                      placeholder="촬영일시를 입력해주세요"
-                      className="border-b border-gray-300 bg-transparent text-xs flex-1 focus:outline-none"
-                      value={tempKeywords[`date-${idx}`] || ""}
+                      type="date"
+                      className="border px-1 py-0.5 rounded text-xs"
+                      value={tempKeywords[`date-${idx}-date`] || ""}
                       onChange={(e) => {
-                        const date = e.target.value;
                         setTempKeywords((prev) => ({
                           ...prev,
-                          [`date-${idx}`]: date,
+                          [`date-${idx}-date`]: e.target.value,
+                        }));
+                      }}
+                    />
+                    <input
+                      type="time"
+                      className="border px-1 py-0.5 rounded text-xs"
+                      value={tempKeywords[`date-${idx}-time`] || ""}
+                      onChange={(e) => {
+                        setTempKeywords((prev) => ({
+                          ...prev,
+                          [`date-${idx}-time`]: e.target.value,
                         }));
                       }}
                     />
                     <button
                       type="button"
-                      className="bg-purple-500 text-white px-1 py-0.5 rounded text-xs"
+                      className="bg-purple-500 text-white px-2 py-0.5 rounded"
                       onClick={() => {
-                        const date = tempKeywords[`date-${idx}`];
+                        const date = tempKeywords[`date-${idx}-date`];
+                        const time = tempKeywords[`date-${idx}-time`] || "00:00";
                         if (!date) return;
 
+                        const formatted = `${date.replaceAll("-", ".")} ${time}`;
                         setImagesWithMeta((prev) =>
-                          prev.map((image, i) =>
-                            i === idx
-                              ? { ...image, takenDateTime: date }
-                              : image
-                          )
+                          prev.map((image, i) => (i === idx ? { ...image, takenDateTime: formatted } : image))
                         );
 
                         setTempKeywords((prev) => {
                           const newTemp = { ...prev };
-                          delete newTemp[`date-${idx}`];
+                          delete newTemp[`date-${idx}-date`];
+                          delete newTemp[`date-${idx}-time`];
                           return newTemp;
                         });
                       }}
@@ -292,16 +288,10 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
         {/* 하단 버튼 */}
         <div className="flex mt-auto gap-2 pb-[env(safe-area-inset-bottom)]">
-          <button
-            onClick={onClose}
-            className="text-gray-500 text-sm flex-1 rounded bg-gray-300"
-          >
+          <button onClick={onClose} className="text-gray-500 text-sm flex-1 rounded bg-gray-300">
             취소
           </button>
-          <button
-            onClick={handleSave}
-            className="bg-purple-500 text-white text-sm px-3 py-2 rounded flex-1"
-          >
+          <button onClick={handleSave} className="bg-purple-500 text-white text-sm px-3 py-2 rounded flex-1">
             저장
           </button>
         </div>

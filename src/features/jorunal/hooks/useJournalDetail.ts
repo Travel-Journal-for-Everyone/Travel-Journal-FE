@@ -5,9 +5,13 @@ interface JournalDetail {
   title: string;
   startDate: string;
   endDate: string;
+  nights: number;
+  days: number;
   region: string;
   hashTag: string[];
   description: string;
+  blockRelationType: string;
+  thumbnailUploadId: string;
   journalDays: {
     dayNumber: number;
     description: string;
@@ -19,22 +23,20 @@ interface JournalDetail {
     }[];
   }[];
   photoList: {
-    photoUrl: string;
-    photoOrder: number;
+    uploadFilename: string;
+    uploadId: string;
     dayNumber: number;
     daySpotOrder: number;
-    uploadId: string;
+    photoOrder: number;
+    photoUrl: string;
   }[];
-  blockRelationType: string;
 }
 
 export function useJournalDetail(journalId?: number) {
   return useQuery<JournalDetail>({
     queryKey: ["journalDetail", journalId],
     queryFn: async () => {
-      const { data } = await axiosInstance.get(
-        `/v1/members/journals/${journalId}`
-      );
+      const { data } = await axiosInstance.get(`/v1/members/journals/${journalId}`);
       return data;
     },
     enabled: !!journalId,
