@@ -11,8 +11,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { JournalDaySlide } from "@/features/jorunal/components/JournalDaySlide";
-import Script from "next/script";
-import { KAKAO_MAP_API } from "@/app/constants/kakao";
 
 export default function WriteJournalPage() {
   const [showUploaderModal, setShowUploaderModal] = useState(false);
@@ -84,16 +82,9 @@ export default function WriteJournalPage() {
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.kakao?.maps) {
-      setIsKakaoReady(true);
-    }
-  }, []);
-
   return (
     <div className="max-w-screen-sm mx-auto pb-20">
       <TopBar title="여행 일지 작성하기" center />
-
       <ImageUploaderModal
         isOpen={showUploaderModal}
         onClose={() => setShowUploaderModal(false)}
@@ -130,7 +121,6 @@ export default function WriteJournalPage() {
           setTitle(suggestedTitle);
         }}
       />
-
       <form className="space-y-6">
         {/* 이미지 미리보기 */}
         {imagesWithMeta.length > 0 && (
@@ -215,15 +205,7 @@ export default function WriteJournalPage() {
         </div>
 
         {/* 지도 및 주소/촬영일시 리스트 */}
-        <Script
-          src={KAKAO_MAP_API}
-          strategy="afterInteractive"
-          onLoad={() => {
-            if (window.kakao?.maps) {
-              setIsKakaoReady(true);
-            }
-          }}
-        />
+
         <Swiper
           modules={[Navigation, Pagination]}
           allowTouchMove={false}
@@ -251,7 +233,6 @@ export default function WriteJournalPage() {
           })}
         </Swiper>
       </form>
-
       <button type="button" onClick={handleSave} className="bg-purple-600 text-white w-full py-2 rounded mt-4">
         여행일지 저장하기
       </button>

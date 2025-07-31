@@ -2,6 +2,7 @@
 
 import { Map, CustomOverlayMap, Polyline } from "react-kakao-maps-sdk";
 import { useEffect, useRef } from "react";
+import { useKakaoReady } from "@/lib/useKakaoReady";
 
 interface Place {
   id: string;
@@ -11,16 +12,21 @@ interface Place {
 }
 
 export default function KakaoMap({ places, visible }: { places: Place[]; visible: boolean }) {
+  const isKakaoReady = useKakaoReady(); // ✅ Kakao 스크립트 준비 상태 확인
   const mapRef = useRef<kakao.maps.Map | null>(null);
 
   const center = places.length ? { lat: places[0].lat, lng: places[0].lng } : { lat: 37.5665, lng: 126.978 };
 
-  // 슬라이드 전환으로 visible이 true가 될 때 지도 리사이즈 트리거
   useEffect(() => {
     if (visible && mapRef.current) {
       kakao.maps.event.trigger(mapRef.current, "resize");
     }
   }, [visible]);
+
+  // ✅ 아직 Kakao Maps SDK가 준비되지 않았으면 null 또는 로딩 메시지 반환
+  if (!isKakaoReady) {
+    return <div className="text-sm text-gray-400">지도를 불러오는 중입니다...</div>;
+  }
 
   return (
     <Map
@@ -31,7 +37,6 @@ export default function KakaoMap({ places, visible }: { places: Place[]; visible
         mapRef.current = map;
       }}
     >
-      {/* 마커들 */}
       {places.map((place, idx) => (
         <CustomOverlayMap key={place.id} position={{ lat: place.lat, lng: place.lng }}>
           <div
@@ -53,7 +58,6 @@ export default function KakaoMap({ places, visible }: { places: Place[]; visible
         </CustomOverlayMap>
       ))}
 
-      {/* 선 */}
       {places.length > 1 && (
         <Polyline
           path={places.map((p) => ({

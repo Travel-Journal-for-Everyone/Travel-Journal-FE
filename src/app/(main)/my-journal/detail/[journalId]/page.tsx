@@ -12,8 +12,6 @@ import { TopBar } from "@/features/common/TopBar";
 import { useJournalDetail } from "@/features/jorunal/hooks/useJournalDetail";
 import { useEffect, useRef, useState } from "react";
 import KakaoMap from "@/features/test/KakaoMap";
-import Script from "next/script";
-import { KAKAO_MAP_API } from "@/app/constants/kakao";
 import { NavigationOptions } from "swiper/types";
 
 export default function MyJournalPage() {
@@ -117,14 +115,6 @@ export default function MyJournalPage() {
           </Swiper>
         </div>
       )}
-
-      <Script
-        src={KAKAO_MAP_API}
-        strategy="afterInteractive"
-        onLoad={() => {
-          if (window.kakao?.maps) setIsKakaoReady(true);
-        }}
-      />
       <Swiper
         modules={[Navigation, Pagination]}
         allowTouchMove={false}
