@@ -9,7 +9,7 @@ interface JournalItem {
   endDate: string;
   region: string;
   hashTag: string[];
-  coverImageUrl?: string;
+  thumbnailUrl: string;
 }
 
 interface JournalListResponse {
@@ -27,12 +27,9 @@ export function useJournalList(page = 0, size = 10) {
   return useQuery<JournalListResponse>({
     queryKey: ["journalList", user?.memberId, page, size],
     queryFn: async () => {
-      const { data } = await axiosInstance.get(
-        `/v1/members/${user!.memberId}/journals`,
-        {
-          params: { page, size },
-        }
-      );
+      const { data } = await axiosInstance.get(`/v1/members/${user!.memberId}/journals`, {
+        params: { page, size },
+      });
       return data;
     },
     enabled: !!user?.memberId,
