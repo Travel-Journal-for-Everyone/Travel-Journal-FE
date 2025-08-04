@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Plus } from "lucide-react";
 import { extractLatLngAndDate } from "@/lib/extractLatLng";
-import { getLocationNameAsync, searchPlace } from "@/services/geoLoactionName";
+import { getLocationNameAsync, searchPlace, waitForKakaoMaps } from "@/services/geoLoactionName";
 import { uploadPhotos } from "@/services/photo";
 
 interface ImageMeta {
@@ -44,6 +44,9 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
     const fileArray = Array.from(files);
 
+    // ✅ Kakao SDK 준비를 기다림
+    await waitForKakaoMaps();
+
     const updatedImages = await Promise.all(
       fileArray.map(async (file) => {
         const extracted = await extractLatLngAndDate(file);
@@ -58,25 +61,13 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
           lat: extracted.lat,
           lng: extracted.lng,
           keyword: locationName,
-          takenDateTime: extracted.takenDateTime ?? "", // 일시 없으면 빈 문자열
+          takenDateTime: extracted.takenDateTime ?? "",
           address: locationName,
         } satisfies ImageMeta;
       })
     );
 
-    setImagesWithMeta((prev) => {
-      // 날짜가 없는 경우에만 takenDateTime 추가, 이미 있다면 유지
-      return [
-        ...prev,
-        ...updatedImages.map((img) => {
-          const hasTakenDate = !!img.takenDateTime;
-          return {
-            ...img,
-            takenDateTime: hasTakenDate ? img.takenDateTime : "", // 사용자 입력을 허용할 여지
-          };
-        }),
-      ];
-    });
+    setImagesWithMeta((prev) => [...prev, ...updatedImages]);
   };
 
   const handleSave = async () => {
@@ -225,7 +216,6 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
                   )}
                 </div>
 
-                {/* ✅ 촬영일시 및 주소 영역 */}
                 {img.takenDateTime ? (
                   <div className="ml-5 text-xs text-gray-500">
                     {img.address && <div className="mb-0.5">도로명주소: {img.address}</div>}

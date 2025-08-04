@@ -1,8 +1,11 @@
+import Script from "next/script";
 import type { Metadata } from "next";
 import { Providers } from "@/provider";
 import localFont from "next/font/local";
 import "./globals.css";
 import MobileNavBar from "@/features/common/MobileNavBar";
+import { KAKAO_MAP_API } from "./constants/kakao";
+import { KakaoInitTrigger } from "@/KakaoInitTrigger";
 
 const pretendard = localFont({
   src: [
@@ -24,8 +27,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <head>
+        <Script src={KAKAO_MAP_API} strategy="beforeInteractive" />
+      </head>
       <body className={`${pretendard.variable} antialiased`}>
         <Providers>
+          <KakaoInitTrigger />
           <MobileNavBar />
           {children}
         </Providers>

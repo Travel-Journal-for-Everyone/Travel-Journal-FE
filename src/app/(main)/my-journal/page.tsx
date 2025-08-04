@@ -1,7 +1,7 @@
 "use client";
 
+import ExploreCard from "@/features/explore/components/exploreCard";
 import { useJournalList } from "@/features/jorunal/hooks/useJournalList";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function MyJournalList() {
@@ -29,25 +29,18 @@ export default function MyJournalList() {
       {data.content.map((journal) => (
         <div key={journal.journalId} className="my-4">
           <Link href={`/my-journal/detail/${journal.journalId}`}>
-            <div className="border rounded-lg p-4 shadow-sm hover:shadow-md transition cursor-pointer">
-              {journal.coverImageUrl && (
-                <div className="mb-4 aspect-video relative w-full rounded overflow-hidden">
-                  <Image src={journal.coverImageUrl} alt={journal.title} fill className="object-cover" />
-                </div>
-              )}
-              <h2 className="text-lg font-bold mb-2">{journal.title}</h2>
-              <p className="text-sm text-gray-500 mb-1">
-                {journal.startDate} ~ {journal.endDate}
-              </p>
-              <p className="text-sm text-gray-500">{journal.region}</p>
-              <div className="flex gap-2 mt-2 flex-wrap">
-                {journal.hashTag.map((tag) => (
-                  <span key={tag} className="text-xs bg-primary-light text-primary-main px-2 py-1 rounded-full">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <ExploreCard
+              journalId={journal.journalId}
+              title={journal.title}
+              startDate={journal.startDate}
+              endDate={journal.endDate}
+              region={journal.region}
+              hashTag={journal.hashTag}
+              thumbnailUrl={journal.thumbnailUrl}
+              likeCount={0}
+              commentCount={0}
+              memberId={0}
+            />
           </Link>
         </div>
       ))}

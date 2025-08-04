@@ -9,9 +9,10 @@ interface TopBarProps {
   backTo?: string;
   center?: boolean;
   rightSlot?: ReactNode;
+  showOptionsButton?: boolean;
 }
 
-export function TopBar({ center, title, backTo, rightSlot }: TopBarProps) {
+export function TopBar({ center, title, backTo, rightSlot, showOptionsButton }: TopBarProps) {
   const router = useRouter();
 
   const handleBack = () => {
@@ -23,25 +24,22 @@ export function TopBar({ center, title, backTo, rightSlot }: TopBarProps) {
   };
 
   return (
-    <div className="flex justify-between items-center my-4 -ml-2">
+    <div className="flex justify-between items-center my-4 -ml-2 relative">
       {center ? (
         <>
           <button className="mr-auto" onClick={handleBack}>
             <ChevronLeft />
           </button>
           <h2 className="mx-auto font-bold">{title}</h2>
-          <div className="ml-auto w-4">
-            {rightSlot ?? <div className="w-4" />}
-          </div>
+          <div className="ml-auto w-6 flex justify-end">{showOptionsButton && rightSlot}</div>
         </>
       ) : (
         <>
           <button onClick={handleBack}>
             <ChevronLeft />
           </button>
-
           <div className="ml-2 font-bold">{title}</div>
-          <div className="ml-auto">{rightSlot ?? <div className="w-4" />}</div>
+          <div className="ml-auto w-6 flex justify-end">{showOptionsButton && rightSlot}</div>
         </>
       )}
     </div>
