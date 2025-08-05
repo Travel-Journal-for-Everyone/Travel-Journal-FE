@@ -6,20 +6,24 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Heart, MessageCircle, MapPin, CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { TopBar } from "@/features/common/TopBar";
 import { useJournalDetail } from "@/features/jorunal/hooks/useJournalDetail";
 import { useEffect, useRef, useState } from "react";
 import KakaoMap from "@/features/test/KakaoMap";
 import { NavigationOptions } from "swiper/types";
+import { OptionDropdown } from "@/features/common/OptionDropdown";
+import { useDeleteJournal } from "@/features/jorunal/hooks/useDeleteJournal";
 
 export default function MyJournalPage() {
+  const router = useRouter();
   const [isKakaoReady, setIsKakaoReady] = useState(false);
   const params = useParams<{ journalId: string }>();
   const journalId = Number(params.journalId);
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
+  const deleteMutation = useDeleteJournal(journalId);
 
   const { data, isLoading, error } = useJournalDetail(journalId);
 
@@ -29,6 +33,12 @@ export default function MyJournalPage() {
     }
   }, []);
 
+  const handleDelete = () => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      deleteMutation.mutate(); // axios DELETE 요청 실행
+    }
+  };
+
   if (isLoading) return <div className="p-4">불러오는 중...</div>;
   if (error || !data) return <div className="p-4">데이터를 불러올 수 없습니다.</div>;
 
@@ -36,7 +46,15 @@ export default function MyJournalPage() {
 
   return (
     <div className="max-w-screen-md mx-auto pt-8 pb-20 px-4">
-      <TopBar title="나의 여행 일지" backTo="/my-journal" center />
+      <TopBar
+        title="나의 여행 일지"
+        backTo="/my-journal"
+        center
+        rightSlot={
+          <OptionDropdown onEdit={() => router.push(`/my-journal/${journalId}/edit`)} onDelete={handleDelete} />
+        }
+        showOptionsButton
+      />
 
       {/* 해시태그 + 제목 + 장소 + 날짜 */}
       <div className="mb-4">
