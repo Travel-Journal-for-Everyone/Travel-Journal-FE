@@ -17,9 +17,7 @@ export async function socialLoginCallbackRequest({
   provider: "google" | "kakao" | "apple";
   deviceId?: string;
 }): Promise<LoginResponse> {
-  const url = new URL(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/auth/login/${provider}/callback`
-  );
+  const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/auth/login/${provider}/callback`);
 
   if (!url.searchParams.has("code")) {
     url.searchParams.append("code", code);
@@ -30,7 +28,7 @@ export async function socialLoginCallbackRequest({
     method: "GET",
     headers: {
       "X-Platform": "web",
-      "Login-Test": "true",
+      // "Login-Test": "true",
       // 배포시에는 제외
     },
   });
