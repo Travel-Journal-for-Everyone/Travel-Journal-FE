@@ -50,7 +50,7 @@ export default function ExplorePage() {
   const isEmpty = allJournals.length === 0;
 
   return (
-    <div className="max-w-screen-lg mx-auto md:pt-8">
+    <div>
       <h1 className="block md:hidden text-xl font-semibold mb-6 text-center">탐험하기</h1>
 
       {isEmpty ? (

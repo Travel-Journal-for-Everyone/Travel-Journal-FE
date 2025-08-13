@@ -6,6 +6,7 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/features/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/styles/**/*.{css}",
   ],
   theme: {
     extend: {
@@ -56,6 +57,7 @@ export default {
         "screen-without-nav": "calc(100vh - 4rem)",
       },
       maxWidth: {
+        "max-content": "1600px",
         content: "1440px",
         desktop: "1920px",
       },

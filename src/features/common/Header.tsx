@@ -17,7 +17,7 @@ const Header = () => {
 
   return (
     <header className="hidden md:block w-full bg-white shadow-gray-50 shadow-sm fixed top-0 left-0 z-50 py-4">
-      <div className="md:mx-20 flex justify-between items-center ">
+      <div className="flex justify-between items-center max-w-max-content mx-auto">
         <div className="flex gap-4 items-center">
           <Link href="/" className="text-xl font-bold text-gray-800">
             모두의 여행일지
@@ -49,10 +49,7 @@ const Header = () => {
               </Link>
             </>
           ) : isClient && !isLoading ? (
-            <Link
-              href="/login"
-              className="text-gray-600 hover:text-gray-900 text-sm"
-            >
+            <Link href="/login" className="text-gray-600 hover:text-gray-900 text-sm">
               로그인 / 회원가입
             </Link>
           ) : null}

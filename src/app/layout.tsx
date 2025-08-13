@@ -6,6 +6,7 @@ import "./globals.css";
 import MobileNavBar from "@/features/common/MobileNavBar";
 import { KAKAO_MAP_API } from "./constants/kakao";
 import { KakaoInitTrigger } from "@/KakaoInitTrigger";
+import "@/styles/tailwind_utilities.css";
 
 const pretendard = localFont({
   src: [
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className="min-h-dvh">
       <head>
         <Script src={KAKAO_MAP_API} strategy="beforeInteractive" />
       </head>
