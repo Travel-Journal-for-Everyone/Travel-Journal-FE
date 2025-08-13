@@ -16,7 +16,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="hidden md:block w-full bg-white shadow-gray-50 shadow-sm fixed top-0 left-0 z-50 py-4">
+    <header className="hidden md:block w-full bg-white shadow-gray-50 shadow-sm fixed top-0 left-0 z-50 p-4">
       <div className="flex justify-between items-center max-w-max-content mx-auto">
         <div className="flex gap-4 items-center">
           <Link href="/" className="text-xl font-bold text-gray-800">
