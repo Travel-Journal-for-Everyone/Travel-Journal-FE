@@ -11,20 +11,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { JournalDaySlide } from "@/features/jorunal/components/JournalDaySlide";
+import type { ImageMeta } from "@/types/journal";
 
 export default function WriteJournalPage() {
   const [showUploaderModal, setShowUploaderModal] = useState(false);
   const [isKakaoReady, setIsKakaoReady] = useState(false);
-  const [imagesWithMeta, setImagesWithMeta] = useState<
-    {
-      file: File;
-      lat?: number;
-      lng?: number;
-      keyword?: string;
-      address?: string;
-      takenDateTime?: string;
-    }[]
-  >([]);
+  const [imagesWithMeta, setImagesWithMeta] = useState<ImageMeta[]>([]);
   const [groupedImages, setGroupedImages] = useState<Record<number, typeof imagesWithMeta>>({});
   const [dayDescriptions, setDayDescriptions] = useState<Record<number, string>>({});
   const [activeIndex, setActiveIndex] = useState(0);
@@ -89,7 +81,7 @@ export default function WriteJournalPage() {
         isOpen={showUploaderModal}
         onClose={() => setShowUploaderModal(false)}
         onSave={(images) => {
-          setImagesWithMeta(images);
+          setImagesWithMeta(images.filter((img): img is ImageMeta => img.file !== null));
 
           // 1. 날짜 설정
           const validDates = images

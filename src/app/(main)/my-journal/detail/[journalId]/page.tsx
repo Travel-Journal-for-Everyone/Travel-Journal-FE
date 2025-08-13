@@ -51,7 +51,7 @@ export default function MyJournalPage() {
         backTo="/my-journal"
         center
         rightSlot={
-          <OptionDropdown onEdit={() => router.push(`/my-journal/${journalId}/edit`)} onDelete={handleDelete} />
+          <OptionDropdown onEdit={() => router.push(`/my-journal/detail/${journalId}/edit`)} onDelete={handleDelete} />
         }
         showOptionsButton
       />
