@@ -8,24 +8,35 @@ import { getLocationNameAsync, searchPlace, waitForKakaoMaps } from "@/services/
 import { uploadPhotos } from "@/services/photo";
 
 interface ImageMeta {
-  file: File;
+  file: File | null;
   lat?: number;
   lng?: number;
   keyword?: string;
   takenDateTime: string;
   address?: string;
+  photoUrl?: string;
+  uploadId?: string;
 }
-
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (images: ImageMeta[]) => void;
+  initialImages?: ImageMeta[];
+}
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSave: (images: ImageMeta[]) => void;
 }
 
-export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
+export default function ImageUploaderModal({ isOpen, onClose, onSave, initialImages }: Props) {
   const [imagesWithMeta, setImagesWithMeta] = useState<ImageMeta[]>([]);
   const [tempKeywords, setTempKeywords] = useState<Record<string, string>>({});
-
+  useEffect(() => {
+    if (initialImages && initialImages.length > 0) {
+      setImagesWithMeta(initialImages);
+    }
+  }, [initialImages]);
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -37,6 +48,16 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    return () => {
+      imagesWithMeta.forEach((img) => {
+        if (img.file instanceof File) {
+          URL.revokeObjectURL(URL.createObjectURL(img.file)); // cleanup
+        }
+      });
+    };
+  }, [imagesWithMeta]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -72,39 +93,56 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
 
   const handleSave = async () => {
     const hasEmptyKeyword = imagesWithMeta.some((img) => !img.keyword || img.keyword === "위치명 없음");
-
     if (hasEmptyKeyword) {
       alert("위치명이 없는 사진이 있습니다. 모든 사진에 위치명을 입력해주세요.");
       return;
     }
 
     try {
-      // 1. File 배열 추출
-      const files = imagesWithMeta.map((img) => img.file);
+      // 1) 신규 파일만 뽑기
+      const newItems = imagesWithMeta.map((img, idx) => ({ img, idx })).filter(({ img }) => img.file instanceof File);
 
-      // 2. 사진 업로드 API 호출
-      const uploadResult = await uploadPhotos(files); // [{ uploadId, uploadFilename }...]
+      // 신규 파일이 하나도 없으면 업로드 안 하고 그대로 반환(수정 모드에서 많이 발생)
+      if (newItems.length === 0) {
+        console.log("📤 신규 파일 없음 → 기존+메타만 부모에 전달");
+        onSave(imagesWithMeta);
+        onClose();
+        return;
+      }
 
-      // 3. 파일 이름 기준으로 응답 결과 매핑
-      const imagesWithUploadMeta = imagesWithMeta.map((img) => {
-        const match = uploadResult.find((res) => res.uploadFilename === img.file.name);
+      // 2) 업로드 호출
+      const files = newItems.map(({ img }) => img.file as File);
+      console.log(
+        "📤 업로드할 파일:",
+        files.map((f) => ({ name: f.name, size: f.size, type: f.type }))
+      );
+      const uploadResult = await uploadPhotos(files);
+      console.log("✅ 업로드 응답:", uploadResult);
 
-        if (!match) {
-          throw new Error(`파일 매칭 실패: ${img.file.name}`);
-        }
+      // 3) 응답 매핑 — index 기반 매칭 (서버가 파일명 매칭을 보장하지 않으면 이 방법이 안전)
+      if (uploadResult.length !== newItems.length) {
+        throw new Error(`업로드 응답 개수(${uploadResult.length})와 요청 파일 개수(${newItems.length})가 다릅니다.`);
+      }
 
-        return {
-          ...img,
-          uploadId: match.uploadId,
-          uploadFilename: match.uploadFilename,
+      // 업로드된 항목을 원래 자리(index)에 반영
+      const merged = [...imagesWithMeta];
+      newItems.forEach(({ idx }, i) => {
+        const { uploadId, uploadFilename } = uploadResult[i]; // 서버 형식에 맞게 사용
+        merged[idx] = {
+          ...merged[idx],
+          // file은 남겨두어도 무방하지만, 부모/서버 페이로드엔 보통 필요 없음
+          uploadId,
+          // 선택: 서버가 기대하면 유지
+          // @ts-expect-error (타입에 없으면 추가)
+          uploadFilename,
         };
       });
 
-      // 4. onSave 호출 (최종 데이터 전달)
-      onSave(imagesWithUploadMeta);
+      // 4) 최종(기존 + 신규) 모두 부모로 전달
+      onSave(merged);
       onClose();
     } catch (error) {
-      console.error("업로드 실패:", error);
+      console.error("❌ 업로드 실패:", error);
       alert("사진 업로드에 실패했습니다. 다시 시도해주세요.");
     }
   };
@@ -124,27 +162,35 @@ export default function ImageUploaderModal({ isOpen, onClose, onSave }: Props) {
           </label>
 
           {/* 이미지 미리보기 */}
-          {imagesWithMeta.map((img, index) => (
-            <div key={index} className="relative aspect-square border rounded-lg overflow-hidden">
-              <Image src={URL.createObjectURL(img.file)} alt="uploaded" fill className="object-cover" />
+          {imagesWithMeta.map((img, index) => {
+            const imageSrc = img.file instanceof File ? URL.createObjectURL(img.file) : img.photoUrl ?? "";
 
-              {/* 좌측 상단 번호 */}
-              <div className="absolute top-1 left-1 bg-black/60 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {index + 1}
+            return (
+              <div key={index} className="relative aspect-square border rounded-lg overflow-hidden">
+                {imageSrc ? (
+                  <Image src={imageSrc} alt={`uploaded-${index}`} fill className="object-cover" />
+                ) : (
+                  <div className="text-sm text-gray-400">이미지 없음</div>
+                )}
+
+                {/* 좌측 상단 번호 */}
+                <div className="absolute top-1 left-1 bg-black/60 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {index + 1}
+                </div>
+
+                {/* 삭제 버튼 */}
+                <button
+                  type="button"
+                  className="absolute top-1 right-1 bg-black/60 text-red-500 rounded-full w-5 h-5 flex items-center justify-center"
+                  onClick={() => {
+                    setImagesWithMeta((prev) => prev.filter((_, i) => i !== index));
+                  }}
+                >
+                  ×
+                </button>
               </div>
-
-              {/* 삭제 버튼 */}
-              <button
-                type="button"
-                className="absolute top-1 right-1 bg-black/60 text-red-500 rounded-full w-5 h-5 flex items-center justify-center"
-                onClick={() => {
-                  setImagesWithMeta((prev) => prev.filter((_, i) => i !== index));
-                }}
-              >
-                ×
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* 사진 없을 때 안내문구 */}

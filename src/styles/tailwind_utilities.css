@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* ✅ 페이지 배경 및 높이 */
+
+  .layout-main {
+    @apply min-h-dvh bg-gradient-to-b from-white via-[#E9FDFF] to-[#F9FEFF] md:bg-white md:bg-none overflow-x-hidden pt-16;
+  }
+  .layout-common {
+    @apply min-h-dvh overflow-x-hidden pt-16;
+  }
+  .layout-content {
+    @apply max-w-[600px] mx-auto;
+  }
+
+  /* ✅ 공통 레이아웃 wrapper */
+  .layout-wrapper {
+    @apply max-w-max-content mx-auto py-4;
+  }
+
+  /* ✅ 폼 페이지용 고정 너비 컨테이너 */
+  .form-wrapper {
+    @apply max-w-[640px] mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ✅ 페이지 헤더 공통 여백 */
+  .page-header {
+    @apply mb-6 text-title1 font-semibold;
+  }
+
+  /* ✅ 카드 박스 디자인 */
+  .card-box {
+    @apply rounded-lg shadow-sm border border-neutral-gray5 bg-white p-4;
+  }
+}

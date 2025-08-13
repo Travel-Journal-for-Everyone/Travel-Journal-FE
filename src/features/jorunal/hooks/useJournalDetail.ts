@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions, type QueryKey, keepPreviousData } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
 
 interface JournalDetail {
@@ -32,14 +32,28 @@ interface JournalDetail {
   }[];
 }
 
-export function useJournalDetail(journalId?: number) {
-  return useQuery<JournalDetail>({
+export function useJournalDetail(
+  journalId?: number,
+  options?: Omit<UseQueryOptions<JournalDetail, Error, JournalDetail, QueryKey>, "queryKey" | "queryFn">
+) {
+  return useQuery<JournalDetail, Error>({
     queryKey: ["journalDetail", journalId],
     queryFn: async () => {
       const { data } = await axiosInstance.get(`/v1/members/journals/${journalId}`);
-      return data;
+      return data as JournalDetail;
     },
-    enabled: !!journalId,
-    staleTime: 1000 * 60 * 5,
+    // ✅ 페이지에서 넘기는 enabled가 우선
+    enabled: !!journalId && (options?.enabled ?? true),
+
+    // ✅ v5에서는 keepPreviousData 대신 이걸 씀
+    placeholderData: options?.placeholderData ?? keepPreviousData,
+    staleTime: options?.staleTime ?? 5 * 60 * 1000,
+
+    // ✅ 포커스/재연결/마운트 리패치 기본 끔
+    refetchOnWindowFocus: options?.refetchOnWindowFocus ?? false,
+    refetchOnReconnect: options?.refetchOnReconnect ?? false,
+    refetchOnMount: options?.refetchOnMount ?? false,
+
+    ...options,
   });
 }

@@ -6,7 +6,8 @@ import Link from "next/link";
 
 export default function MyJournalList() {
   const { data, isLoading, isError } = useJournalList(0, 10);
-
+  const allJournals = data?.content ?? [];
+  const isEmpty = allJournals.length === 0;
   if (isLoading) return <p>로딩 중...</p>;
   if (isError) return <p>오류가 발생했습니다.</p>;
 
@@ -25,25 +26,31 @@ export default function MyJournalList() {
   }
 
   return (
-    <div className="max-w-screen-md mx-auto px-4 py-8 space-y-6">
-      {data.content.map((journal) => (
-        <div key={journal.journalId} className="my-4">
-          <Link href={`/my-journal/detail/${journal.journalId}`}>
-            <ExploreCard
-              journalId={journal.journalId}
-              title={journal.title}
-              startDate={journal.startDate}
-              endDate={journal.endDate}
-              region={journal.region}
-              hashTag={journal.hashTag}
-              thumbnailUrl={journal.thumbnailUrl}
-              likeCount={0}
-              commentCount={0}
-              memberId={0}
-            />
-          </Link>
+    <>
+      {isEmpty ? (
+        <div className="text-center text-gray-500 py-20">아직 등록된 여행일지가 없습니다.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-20 md:mb-0">
+          {data.content.map((journal) => (
+            <div key={journal.journalId} className="my-4">
+              <Link href={`/my-journal/detail/${journal.journalId}`}>
+                <ExploreCard
+                  journalId={journal.journalId}
+                  title={journal.title}
+                  startDate={journal.startDate}
+                  endDate={journal.endDate}
+                  region={journal.region}
+                  hashTag={journal.hashTag}
+                  thumbnailUrl={journal.thumbnailUrl}
+                  likeCount={0}
+                  commentCount={0}
+                  memberId={0}
+                />
+              </Link>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }
