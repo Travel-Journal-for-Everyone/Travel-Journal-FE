@@ -13,16 +13,10 @@ interface RegionDetailPanelProps {
   regionName: string;
 }
 
-export default function RegionDetailPanel({
-  isOpen,
-  onClose,
-  regionName,
-}: RegionDetailPanelProps) {
+export default function RegionDetailPanel({ isOpen, onClose, regionName }: RegionDetailPanelProps) {
   const [tab, setTab] = useState<"diary" | "place">("diary");
-  const { data: journalData, isLoading: isJournalLoading } =
-    useJournalRegion(regionName);
-  const { data: placeData, isLoading: isPlaceLoading } =
-    useJournalPlace(regionName);
+  const { data: journalData, isLoading: isJournalLoading } = useJournalRegion(regionName);
+  const { data: placeData, isLoading: isPlaceLoading } = useJournalPlace(regionName);
 
   const diaries = journalData?.content ?? [];
   const places = placeData?.content ?? [];
@@ -46,7 +40,7 @@ export default function RegionDetailPanel({
         initial={{ x: "100%" }}
         animate={{ x: isOpen ? 0 : "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-sm z-50 overflow-y-auto md:block hidden"
+        className="absolute top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-sm z-50 overflow-y-auto md:block hidden"
       >
         <div className="p-6">
           <h2 className="text-lg font-bold text-center">{regionName}</h2>
@@ -55,9 +49,7 @@ export default function RegionDetailPanel({
             <button
               onClick={() => setTab("diary")}
               className={`py-2 text-sm font-medium w-full ${
-                tab === "diary"
-                  ? "border-b-2 border-primary-main"
-                  : "text-gray-400"
+                tab === "diary" ? "border-b-2 border-primary-main" : "text-gray-400"
               }`}
             >
               여행 일지 {diaries.length}
@@ -65,9 +57,7 @@ export default function RegionDetailPanel({
             <button
               onClick={() => setTab("place")}
               className={`w-full py-2 text-sm font-medium ${
-                tab === "place"
-                  ? "border-b-2 border-primary-main"
-                  : "text-gray-400"
+                tab === "place" ? "border-b-2 border-primary-main" : "text-gray-400"
               }`}
             >
               플레이스 {places.length}
@@ -79,16 +69,10 @@ export default function RegionDetailPanel({
           ) : tab === "diary" ? (
             <div className="grid grid-cols-1 gap-4 mt-4">
               {diaries.map((item) => (
-                <div
-                  key={item.journalId}
-                  className="border rounded-md p-3 shadow-sm"
-                >
+                <div key={item.journalId} className="border rounded-md p-3 shadow-sm">
                   <div className="text-xs text-primary my-1 flex gap-2 ">
                     {item.hashTag.map((tag, idx) => (
-                      <div
-                        key={idx}
-                        className="text-xs text-primary-main mt-1 bg-primary-light p-2 py-1 rounded-full"
-                      >
+                      <div key={idx} className="text-xs text-primary-main mt-1 bg-primary-light p-2 py-1 rounded-full">
                         #{tag}
                       </div>
                     ))}

@@ -43,11 +43,8 @@ export default function MemberClientPage({ memberId }: Props) {
   const regions = data.regions ?? [];
 
   return (
-    <div className="md:mt-20 max-w-[600px] mx-auto">
-      <TopBar
-        title={`${data.profileInfo.nickname}`}
-        rightSlot={<FollowButton memberId={memberId} />}
-      />
+    <div className="layout-content">
+      <TopBar title={`${data.profileInfo.nickname}`} rightSlot={<FollowButton memberId={memberId} />} />
       <ProfileCard
         memberId={memberId}
         mobile={false}
@@ -63,56 +60,33 @@ export default function MemberClientPage({ memberId }: Props) {
           <section>
             <div className="flex justify-center items-center">
               <div className="relative w-full md:min-w-[400px] max-w-[400px]">
-                <RegionMap
-                  onSelectRegion={(region: SetStateAction<string | null>) =>
-                    setSelectedRegion(region)
-                  }
-                />
-                {Object.entries(regionMapData).map(
-                  ([regionKey, { label, x, y }]) => {
-                    const regionData = regions?.find(
-                      (r: { regionName: string }) =>
-                        label === "서울 · 경기 · 인천"
-                          ? r.regionName === "수도권"
-                          : r.regionName === label
-                    );
-                    return (
-                      <div
-                        key={regionKey}
-                        className="absolute text-center text-xs pointer-events-none"
-                        style={{ top: y, left: x }}
-                      >
-                        <p className="font-semibold">{label}</p>
-                        {regionData ? (
-                          <>
-                            <div className="flex gap-1 items-center mt-1.5">
-                              <Image
-                                src="/icons/Icon-paper-gray-18px.svg"
-                                alt="Diary"
-                                width={16}
-                                height={16}
-                              />
-                              <span className=" text-gray7">
-                                {regionData.travelDiaryCount}일지
-                              </span>
-                              <Image
-                                src="/icons/Icon-pin-gray-18px.svg"
-                                alt="profile"
-                                width={16}
-                                height={16}
-                              />
-                              <span className=" text-gray7">
-                                {regionData.placesCount}곳
-                              </span>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="min-w-full"></div>
-                        )}
-                      </div>
-                    );
-                  }
-                )}
+                <RegionMap onSelectRegion={(region: SetStateAction<string | null>) => setSelectedRegion(region)} />
+                {Object.entries(regionMapData).map(([regionKey, { label, x, y }]) => {
+                  const regionData = regions?.find((r: { regionName: string }) =>
+                    label === "서울 · 경기 · 인천" ? r.regionName === "수도권" : r.regionName === label
+                  );
+                  return (
+                    <div
+                      key={regionKey}
+                      className="absolute text-center text-xs pointer-events-none"
+                      style={{ top: y, left: x }}
+                    >
+                      <p className="font-semibold">{label}</p>
+                      {regionData ? (
+                        <>
+                          <div className="flex gap-1 items-center mt-1.5">
+                            <Image src="/icons/Icon-paper-gray-18px.svg" alt="Diary" width={16} height={16} />
+                            <span className=" text-gray7">{regionData.travelDiaryCount}일지</span>
+                            <Image src="/icons/Icon-pin-gray-18px.svg" alt="profile" width={16} height={16} />
+                            <span className=" text-gray7">{regionData.placesCount}곳</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="min-w-full"></div>
+                      )}
+                    </div>
+                  );
+                })}
                 <RegionDetailPanel
                   isOpen={!!selectedRegion}
                   onClose={() => setSelectedRegion(null)}
@@ -128,9 +102,7 @@ export default function MemberClientPage({ memberId }: Props) {
             <div className="relative w-full md:min-w-[400px] max-w-[400px]">
               <div className="absolute w-full h-full backdrop-blur-md flex justify-center items-center">
                 <span className="text-gray-600 text-sm font-medium">
-                  {accountScope === "PRIVATE"
-                    ? "나만 보기 계정입니다"
-                    : "친구만 보기 계정입니다"}
+                  {accountScope === "PRIVATE" ? "나만 보기 계정입니다" : "친구만 보기 계정입니다"}
                 </span>
               </div>
               <RegionMap />
